@@ -1,0 +1,6 @@
+Capsule.lean:3:25: error: unsolved goals
+case not_isUnit
+⊢ ¬IsUnit 2
+
+case isUnit_or_isUnit
+⊢ ∀ ⦃a b : ℕ⦄, 2 = a * b → IsUnit a ∨ IsUnit b

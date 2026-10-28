@@ -1,0 +1,4 @@
+Capsule.lean:6:2: error: type class instance expected
+  α
+Capsule.lean:5:0: error: type of theorem `ProjectLocal.local_elab_failure` is not a proposition
+  {α : Type} → α

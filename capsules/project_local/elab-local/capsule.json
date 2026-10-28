@@ -1,0 +1,43 @@
+{
+  "schema_version": "leancapsule.v0.1",
+  "capsule_id": "elab-local",
+  "target": {
+    "source_file": "LocalElabFailure.lean",
+    "lines": "1:7",
+    "selection_mode": "lines"
+  },
+  "environment": {
+    "lean_toolchain": "leanprover/lean4:v4.32.0",
+    "lake_manifest_present": true,
+    "lakefile_present": true,
+    "local_files": [],
+    "dependency_project": null
+  },
+  "expected": {
+    "compile_ok": false,
+    "returncode": 1,
+    "category": "compile_error",
+    "diagnostic_key": "compile_error | compile_error: type class instance expected; compile_error: type of theorem `ProjectLocal.local_elab_failure` is not a proposition",
+    "summary": "compile_error: type class instance expected; compile_error: type of theorem `ProjectLocal.local_elab_failure` is not a proposition"
+  },
+  "extraction": {
+    "mode": "full_file_fallback",
+    "fallback_reason": "目标依赖完整文件上下文，或 standalone 编译结果与原始诊断不一致"
+  },
+  "minimization": {
+    "mode": "full_file_fallback",
+    "reason": "保留完整源文件以保证上下文不丢失",
+    "compile_attempts": 1
+  },
+  "taxonomy": "Elaboration / instance",
+  "source_kind": "project_local",
+  "provenance": {
+    "license": "MIT",
+    "source_url": null,
+    "notes": "仓库内可公开的 project-local 案例。"
+  },
+  "replay": {
+    "file": "Capsule.lean",
+    "command": "python -m leancapsule replay ."
+  }
+}

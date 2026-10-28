@@ -1,0 +1,2 @@
+Capsule.lean:5:2: error: type class instance expected
+  α

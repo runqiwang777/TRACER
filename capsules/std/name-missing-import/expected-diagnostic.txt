@@ -1,0 +1,6 @@
+Capsule.lean:1:0: error: unknown module prefix 'Definitely'
+
+No directory 'Definitely' or file 'Definitely.olean' in the search path entries:
+<search-path>
+<search-path>
+<search-path>

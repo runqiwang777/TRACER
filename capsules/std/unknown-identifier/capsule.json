@@ -1,0 +1,37 @@
+{
+  "schema_version": "leancapsule.v0.1",
+  "capsule_id": "unknown-identifier",
+  "taxonomy": "Name / import",
+  "source_kind": "std",
+  "target": {
+    "source_file": "unknown_identifier.lean",
+    "lines": "1:7",
+    "selection_mode": "lines"
+  },
+  "environment": {
+    "lean_toolchain": "leanprover/lean4:v4.32.0",
+    "lake_manifest_present": true,
+    "lakefile_present": true
+  },
+  "expected": {
+    "compile_ok": false,
+    "returncode": 1,
+    "category": "unknown_identifier",
+    "diagnostic_key": "unknown_identifier | unknown_identifier: Unknown identifier `missing_identifier`",
+    "summary": "unknown_identifier: Unknown identifier `missing_identifier`"
+  },
+  "minimization": {
+    "mode": "full_file_fallback",
+    "reason": "首版保留完整源文件以保证上下文不丢失",
+    "compile_attempts": 1
+  },
+  "provenance": {
+    "license": "MIT",
+    "source_url": null,
+    "notes": "仓库内构造的 Std 诊断回归案例。"
+  },
+  "replay": {
+    "file": "Capsule.lean",
+    "command": "python -m leancapsule replay ."
+  }
+}

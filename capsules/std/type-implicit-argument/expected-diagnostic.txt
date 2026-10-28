@@ -1,0 +1,8 @@
+Capsule.lean:4:37: error: Application type mismatch: The argument
+  True
+has type
+  Prop
+but is expected to have type
+  Nat
+in the application
+  identity True

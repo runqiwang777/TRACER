@@ -1,0 +1,25 @@
+capsule_id,path,taxonomy,source_kind,category,extraction_mode
+elab-prime-instance,mathlib/elab-prime-instance,Elaboration / instance,mathlib,compile_error,full_file_fallback
+goal-prime-proof,mathlib/goal-prime-proof,Goal / scope,mathlib,unsolved_goals,full_file_fallback
+name-prime-api,mathlib/name-prime-api,Name / import,mathlib,unknown_identifier,full_file_fallback
+type-prime-statement,mathlib/type-prime-statement,Type / application,mathlib,type_mismatch,full_file_fallback
+elab-local,project_local/elab-local,Elaboration / instance,project_local,compile_error,full_file_fallback
+goal-local,project_local/goal-local,Goal / scope,project_local,unsolved_goals,full_file_fallback
+local-failure,project_local/local-failure,Goal / scope,project_local,compile_error,full_file_fallback
+multi-file-local,project_local/multi-file-local,Name / import,project_local,compile_error,full_file_fallback
+name-local,project_local/name-local,Name / import,project_local,unknown_identifier,full_file_fallback
+type-local,project_local/type-local,Type / application,project_local,type_mismatch,full_file_fallback
+elab-coercion,std/elab-coercion,Elaboration / instance,std,type_mismatch,full_file_fallback
+elab-instance,std/elab-instance,Elaboration / instance,std,compile_error,full_file_fallback
+elab-metavariable,std/elab-metavariable,Elaboration / instance,std,compile_error,full_file_fallback
+evaluation18,std/evaluation18,Goal / scope,std,ok,standalone
+goal-invalid-end,std/goal-invalid-end,Goal / scope,std,compile_error,full_file_fallback
+goal-local-context,std/goal-local-context,Goal / scope,std,unknown_identifier,full_file_fallback
+goal-unsolved,std/goal-unsolved,Goal / scope,std,unsolved_goals,full_file_fallback
+name-missing-import,std/name-missing-import,Name / import,std,compile_error,full_file_fallback
+name-namespace,std/name-namespace,Name / import,std,unknown_identifier,full_file_fallback
+name-unknown-identifier,std/name-unknown-identifier,Name / import,std,unknown_identifier,full_file_fallback
+type-application,std/type-application,Type / application,std,type_mismatch,full_file_fallback
+type-implicit-argument,std/type-implicit-argument,Type / application,std,type_mismatch,full_file_fallback
+type-mismatch,std/type-mismatch,Type / application,std,type_mismatch,full_file_fallback
+unknown-identifier,std/unknown-identifier,Name / import,std,unknown_identifier,

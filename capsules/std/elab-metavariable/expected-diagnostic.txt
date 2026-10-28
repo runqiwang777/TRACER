@@ -1,0 +1,5 @@
+Capsule.lean:4:8: error: don't know how to synthesize placeholder
+context:
+⊢ True
+Capsule.lean:3:18: error: unsolved goals
+⊢ True

@@ -1,0 +1,7 @@
+name = "local_capsule"
+version = "0.1.0"
+defaultTargets = ["Local"]
+
+[[lean_lib]]
+name = "Local"
+srcDir = "Local"

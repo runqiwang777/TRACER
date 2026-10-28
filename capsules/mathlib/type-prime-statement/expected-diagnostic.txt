@@ -1,0 +1,6 @@
+Capsule.lean:4:2: error: Type mismatch
+  Nat.prime_two
+has type
+  Nat.Prime 2
+but is expected to have type
+  Nat.Prime 1

@@ -1,0 +1,45 @@
+{
+  "schema_version": "leancapsule.v0.1",
+  "capsule_id": "multi-file-local",
+  "target": {
+    "source_file": "Main.lean",
+    "lines": "1:4",
+    "selection_mode": "lines"
+  },
+  "environment": {
+    "lean_toolchain": "leanprover/lean4:v4.32.0",
+    "lake_manifest_present": true,
+    "lakefile_present": true,
+    "local_files": [
+      "Helper.lean"
+    ],
+    "dependency_project": null
+  },
+  "expected": {
+    "compile_ok": false,
+    "returncode": 1,
+    "category": "compile_error",
+    "diagnostic_key": "compile_error | compile_error: unknown module prefix 'Helper'",
+    "summary": "compile_error: unknown module prefix 'Helper'"
+  },
+  "extraction": {
+    "mode": "full_file_fallback",
+    "fallback_reason": "目标依赖完整文件上下文，或 standalone 编译结果与原始诊断不一致"
+  },
+  "minimization": {
+    "mode": "full_file_fallback",
+    "reason": "保留完整源文件以保证上下文不丢失",
+    "compile_attempts": 1
+  },
+  "taxonomy": "Name / import",
+  "source_kind": "project_local",
+  "provenance": {
+    "license": "MIT",
+    "source_url": null,
+    "notes": "刻意展示缺失本地模块构建产物时的 import 失败；不宣称完成任意多文件切片。"
+  },
+  "replay": {
+    "file": "Capsule.lean",
+    "command": "python -m leancapsule replay ."
+  }
+}

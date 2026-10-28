@@ -1,0 +1,215 @@
+{
+  "ok": true,
+  "total": 24,
+  "taxonomy_counts": {
+    "Elaboration / instance": 5,
+    "Goal / scope": 7,
+    "Name / import": 7,
+    "Type / application": 5
+  },
+  "source_counts": {
+    "mathlib": 4,
+    "project_local": 6,
+    "std": 14
+  },
+  "requirements": {
+    "minimum_total": true,
+    "minimum_taxonomy": true,
+    "minimum_sources": true
+  },
+  "errors": [],
+  "capsules": [
+    {
+      "capsule_id": "elab-prime-instance",
+      "path": "mathlib/elab-prime-instance",
+      "taxonomy": "Elaboration / instance",
+      "source_kind": "mathlib",
+      "category": "compile_error",
+      "extraction_mode": "full_file_fallback"
+    },
+    {
+      "capsule_id": "goal-prime-proof",
+      "path": "mathlib/goal-prime-proof",
+      "taxonomy": "Goal / scope",
+      "source_kind": "mathlib",
+      "category": "unsolved_goals",
+      "extraction_mode": "full_file_fallback"
+    },
+    {
+      "capsule_id": "name-prime-api",
+      "path": "mathlib/name-prime-api",
+      "taxonomy": "Name / import",
+      "source_kind": "mathlib",
+      "category": "unknown_identifier",
+      "extraction_mode": "full_file_fallback"
+    },
+    {
+      "capsule_id": "type-prime-statement",
+      "path": "mathlib/type-prime-statement",
+      "taxonomy": "Type / application",
+      "source_kind": "mathlib",
+      "category": "type_mismatch",
+      "extraction_mode": "full_file_fallback"
+    },
+    {
+      "capsule_id": "elab-local",
+      "path": "project_local/elab-local",
+      "taxonomy": "Elaboration / instance",
+      "source_kind": "project_local",
+      "category": "compile_error",
+      "extraction_mode": "full_file_fallback"
+    },
+    {
+      "capsule_id": "goal-local",
+      "path": "project_local/goal-local",
+      "taxonomy": "Goal / scope",
+      "source_kind": "project_local",
+      "category": "unsolved_goals",
+      "extraction_mode": "full_file_fallback"
+    },
+    {
+      "capsule_id": "local-failure",
+      "path": "project_local/local-failure",
+      "taxonomy": "Goal / scope",
+      "source_kind": "project_local",
+      "category": "compile_error",
+      "extraction_mode": "full_file_fallback"
+    },
+    {
+      "capsule_id": "multi-file-local",
+      "path": "project_local/multi-file-local",
+      "taxonomy": "Name / import",
+      "source_kind": "project_local",
+      "category": "compile_error",
+      "extraction_mode": "full_file_fallback"
+    },
+    {
+      "capsule_id": "name-local",
+      "path": "project_local/name-local",
+      "taxonomy": "Name / import",
+      "source_kind": "project_local",
+      "category": "unknown_identifier",
+      "extraction_mode": "full_file_fallback"
+    },
+    {
+      "capsule_id": "type-local",
+      "path": "project_local/type-local",
+      "taxonomy": "Type / application",
+      "source_kind": "project_local",
+      "category": "type_mismatch",
+      "extraction_mode": "full_file_fallback"
+    },
+    {
+      "capsule_id": "elab-coercion",
+      "path": "std/elab-coercion",
+      "taxonomy": "Elaboration / instance",
+      "source_kind": "std",
+      "category": "type_mismatch",
+      "extraction_mode": "full_file_fallback"
+    },
+    {
+      "capsule_id": "elab-instance",
+      "path": "std/elab-instance",
+      "taxonomy": "Elaboration / instance",
+      "source_kind": "std",
+      "category": "compile_error",
+      "extraction_mode": "full_file_fallback"
+    },
+    {
+      "capsule_id": "elab-metavariable",
+      "path": "std/elab-metavariable",
+      "taxonomy": "Elaboration / instance",
+      "source_kind": "std",
+      "category": "compile_error",
+      "extraction_mode": "full_file_fallback"
+    },
+    {
+      "capsule_id": "evaluation18",
+      "path": "std/evaluation18",
+      "taxonomy": "Goal / scope",
+      "source_kind": "std",
+      "category": "ok",
+      "extraction_mode": "standalone"
+    },
+    {
+      "capsule_id": "goal-invalid-end",
+      "path": "std/goal-invalid-end",
+      "taxonomy": "Goal / scope",
+      "source_kind": "std",
+      "category": "compile_error",
+      "extraction_mode": "full_file_fallback"
+    },
+    {
+      "capsule_id": "goal-local-context",
+      "path": "std/goal-local-context",
+      "taxonomy": "Goal / scope",
+      "source_kind": "std",
+      "category": "unknown_identifier",
+      "extraction_mode": "full_file_fallback"
+    },
+    {
+      "capsule_id": "goal-unsolved",
+      "path": "std/goal-unsolved",
+      "taxonomy": "Goal / scope",
+      "source_kind": "std",
+      "category": "unsolved_goals",
+      "extraction_mode": "full_file_fallback"
+    },
+    {
+      "capsule_id": "name-missing-import",
+      "path": "std/name-missing-import",
+      "taxonomy": "Name / import",
+      "source_kind": "std",
+      "category": "compile_error",
+      "extraction_mode": "full_file_fallback"
+    },
+    {
+      "capsule_id": "name-namespace",
+      "path": "std/name-namespace",
+      "taxonomy": "Name / import",
+      "source_kind": "std",
+      "category": "unknown_identifier",
+      "extraction_mode": "full_file_fallback"
+    },
+    {
+      "capsule_id": "name-unknown-identifier",
+      "path": "std/name-unknown-identifier",
+      "taxonomy": "Name / import",
+      "source_kind": "std",
+      "category": "unknown_identifier",
+      "extraction_mode": "full_file_fallback"
+    },
+    {
+      "capsule_id": "type-application",
+      "path": "std/type-application",
+      "taxonomy": "Type / application",
+      "source_kind": "std",
+      "category": "type_mismatch",
+      "extraction_mode": "full_file_fallback"
+    },
+    {
+      "capsule_id": "type-implicit-argument",
+      "path": "std/type-implicit-argument",
+      "taxonomy": "Type / application",
+      "source_kind": "std",
+      "category": "type_mismatch",
+      "extraction_mode": "full_file_fallback"
+    },
+    {
+      "capsule_id": "type-mismatch",
+      "path": "std/type-mismatch",
+      "taxonomy": "Type / application",
+      "source_kind": "std",
+      "category": "type_mismatch",
+      "extraction_mode": "full_file_fallback"
+    },
+    {
+      "capsule_id": "unknown-identifier",
+      "path": "std/unknown-identifier",
+      "taxonomy": "Name / import",
+      "source_kind": "std",
+      "category": "unknown_identifier",
+      "extraction_mode": null
+    }
+  ]
+}

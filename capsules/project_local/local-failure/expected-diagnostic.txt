@@ -1,0 +1,6 @@
+Capsule.lean:8:2: error: Tactic `rfl` failed: The left-hand side
+  local_helper 1
+is not definitionally equal to the right-hand side
+  3
+
+⊢ local_helper 1 = 3

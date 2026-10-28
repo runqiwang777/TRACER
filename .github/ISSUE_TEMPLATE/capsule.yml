@@ -1,0 +1,29 @@
+name: 新增 Lean capsule
+description: 提交一个可复现的 Lean 失败工件
+title: "[capsule] "
+labels: [capsule]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        请确认 capsule 不含密钥、个人路径和未授权代码。
+  - type: input
+    id: source
+    attributes:
+      label: 来源
+      description: 原始项目或 issue 链接
+    validations:
+      required: true
+  - type: input
+    id: license
+    attributes:
+      label: 许可
+    validations:
+      required: true
+  - type: textarea
+    id: replay
+    attributes:
+      label: 回放结果
+      description: 粘贴 python -m leancapsule replay 的 JSON 输出
+    validations:
+      required: true

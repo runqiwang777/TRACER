@@ -1,0 +1,4 @@
+Capsule.lean:5:0: error: Invalid name after `end`: Expected `Demo`, but found `Other`
+
+Hint: Use current scope name `Demo`:
+  end O̵t̵h̵e̵r̵D̲e̲m̲o̲

@@ -1,0 +1,25 @@
+capsule_id,taxonomy,source_kind,replay_pass,semantic_match,provenance_review,sensitive_content_review,review_status,reviewer_note
+elab-prime-instance,Elaboration / instance,mathlib,true,true,true,true,repository_review_pass,原始与回放均为实例参数位置的 elaboration 失败
+goal-prime-proof,Goal / scope,mathlib,true,true,true,true,repository_review_pass,原始与回放均保留未解决目标
+name-prime-api,Name / import,mathlib,true,true,true,true,repository_review_pass,原始与回放均为不存在的名称
+type-prime-statement,Type / application,mathlib,true,true,true,true,repository_review_pass,原始与回放均为命题项类型不匹配
+elab-local,Elaboration / instance,project_local,true,true,true,true,repository_review_pass,原始与回放诊断类别及规范化文本一致
+goal-local,Goal / scope,project_local,true,true,true,true,repository_review_pass,原始与回放均保留未解决目标
+local-failure,Goal / scope,project_local,true,true,true,true,repository_review_pass,原始与回放均为局部项目中的反身性证明失败
+multi-file-local,Name / import,project_local,true,true,true,true,repository_review_pass,原始与回放均为缺失本地模块构建产物
+name-local,Name / import,project_local,true,true,true,true,repository_review_pass,原始与回放均为未知本地名称
+type-local,Type / application,project_local,true,true,true,true,repository_review_pass,原始与回放均为局部声明类型不匹配
+elab-coercion,Elaboration / instance,std,true,true,true,true,repository_review_pass,原始与回放均为强制转换目标类型不匹配
+elab-instance,Elaboration / instance,std,true,true,true,true,repository_review_pass,原始与回放均为实例参数 elaboration 失败
+elab-metavariable,Elaboration / instance,std,true,true,true,true,repository_review_pass,原始与回放均为占位项无法合成
+evaluation18,Goal / scope,std,true,true,true,true,repository_review_pass,成功校准案例已替换为完整证明且编译通过
+goal-invalid-end,Goal / scope,std,true,true,true,true,repository_review_pass,原始与回放均为 namespace 作用域结束错误
+goal-local-context,Goal / scope,std,true,true,true,true,repository_review_pass,原始与回放均为局部上下文名称不可见
+goal-unsolved,Goal / scope,std,true,true,true,true,repository_review_pass,原始与回放均保留未解决目标
+name-missing-import,Name / import,std,true,true,true,true,repository_review_pass,原始与回放均为模块前缀不存在
+name-namespace,Name / import,std,true,true,true,true,repository_review_pass,原始与回放均为 namespace 内名称不可见
+name-unknown-identifier,Name / import,std,true,true,true,true,repository_review_pass,原始与回放均为未知标识符
+type-application,Type / application,std,true,true,true,true,repository_review_pass,原始与回放均为函数实参类型不匹配
+type-implicit-argument,Type / application,std,true,true,true,true,repository_review_pass,原始与回放均为隐式参数相关类型不匹配
+type-mismatch,Type / application,std,true,true,true,true,repository_review_pass,原始与回放均为直接类型不匹配
+unknown-identifier,Name / import,std,true,true,true,true,repository_review_pass,原始与回放均为未知标识符

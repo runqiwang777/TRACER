@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+title: "TRACER / LeanCapsule"
+message: "如果本项目对你的研究有帮助，请引用此仓库。"
+type: software
+authors:
+  - family-names: "Wang"
+    given-names: "Runqi"
+version: 0.1.0
+date-released: 2026-08-25
+abstract: "由 Lean 编译器验证的证明修复与可回放失败工件工具。"

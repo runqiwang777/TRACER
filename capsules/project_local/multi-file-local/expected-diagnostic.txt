@@ -1,0 +1,7 @@
+Capsule.lean:1:0: error: unknown module prefix 'Helper'
+
+No directory 'Helper' or file 'Helper.olean' in the search path entries:
+<search-path>
+<search-path>
+<search-path>
+<search-path>

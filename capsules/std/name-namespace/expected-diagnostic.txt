@@ -1,0 +1,4 @@
+Capsule.lean:4:0: warning: Definition `proof` is a proposition; use `theorem` instead of `def`
+
+Note: This linter can be disabled with `set_option linter.defProp false`
+Capsule.lean:8:8: error(lean.unknownIdentifier): Unknown identifier `proof`

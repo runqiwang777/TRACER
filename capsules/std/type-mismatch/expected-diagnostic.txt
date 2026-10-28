@@ -1,0 +1,7 @@
+Capsule.lean:3:17: error: Type mismatch
+  True.intro
+has type
+  True
+of sort `Prop` but is expected to have type
+  Nat
+of sort `Type`

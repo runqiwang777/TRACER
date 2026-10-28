@@ -1,0 +1,6 @@
+Capsule.lean:4:2: error: Type mismatch
+  "not a natural number"
+has type
+  String
+but is expected to have type
+  Nat

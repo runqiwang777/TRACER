@@ -1,0 +1,8 @@
+Capsule.lean:4:49: error: unsolved goals
+case left
+p : Prop
+⊢ p
+
+case right
+p : Prop
+⊢ p

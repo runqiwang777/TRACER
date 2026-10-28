@@ -1,0 +1,44 @@
+{
+  "schema_version": "leancapsule.v0.1",
+  "capsule_id": "evaluation18",
+  "taxonomy": "Goal / scope",
+  "source_kind": "std",
+  "target": {
+    "source_file": "Evaluation18.lean",
+    "theorem": "Eval18.and_swap_eval",
+    "selection_mode": "theorem"
+  },
+  "environment": {
+    "lean_toolchain": "leanprover/lean4:v4.32.0",
+    "lake_manifest_present": true,
+    "lakefile_present": true
+  },
+  "expected": {
+    "compile_ok": true,
+    "returncode": 0,
+    "category": "ok",
+    "diagnostic_key": "ok | Lean 编译通过。",
+    "summary": "Lean 编译通过。"
+  },
+  "extraction": {
+    "mode": "standalone",
+    "fallback_reason": null
+  },
+  "minimization": {
+    "mode": "standalone_verified_greedy_imports",
+    "original_imports": 1,
+    "retained_imports": 0,
+    "removed_imports": 1,
+    "compile_attempts": 1,
+    "budget_exhausted": false
+  },
+  "provenance": {
+    "license": "MIT",
+    "source_url": null,
+    "notes": "仓库内构造的成功回放校准案例。"
+  },
+  "replay": {
+    "file": "Capsule.lean",
+    "command": "python -m leancapsule replay ."
+  }
+}

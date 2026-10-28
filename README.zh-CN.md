@@ -72,5 +72,3 @@ Capsule 全量验证需要准备固定项目依赖。离线测试和审计不会
 ## 引用与许可
 
 研究或教学使用时，请引用 [CITATION.cff](CITATION.cff)，并注明仓库版本和实验批次。项目采用 [MIT License](LICENSE)；各 Capsule 保留其来源许可。
-
-感谢 [SJTU AI4Math Summer School 2026](https://sjtu-ai4math.github.io/summer-school/2026/) 提供学习交流平台，也感谢 [subfish-zhou](https://github.com/subfish-zhou) 与 [Fulcrum-Nebula](https://github.com/Fulcrum-Nebula) 对研究方向提出建议。

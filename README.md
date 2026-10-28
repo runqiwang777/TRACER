@@ -72,5 +72,3 @@ Capsule verification needs the pinned project dependencies. Offline tests and au
 ## Citation and license
 
 For research or teaching use, cite [CITATION.cff](CITATION.cff) and identify the exact version and experiment batch. The project is under the [MIT License](LICENSE); capsules retain their individual source licenses.
-
-Thanks to [SJTU AI4Math Summer School 2026](https://sjtu-ai4math.github.io/summer-school/2026/) and to [subfish-zhou](https://github.com/subfish-zhou) and [Fulcrum-Nebula](https://github.com/Fulcrum-Nebula) for feedback that informed the research direction.

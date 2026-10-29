@@ -4,7 +4,7 @@
 
 ### Typed Repair Agent with Compiler-validated Example Retrieval
 
-![TRACER project overview](https://runqiwang777.github.io/contents/images/tracer.jpg)
+![TRACER project overview](https://github.com/runqiwang777/TRACER/blob/main/TRACER.png)
 
 TRACER is a Lean 4 proof-repair and failure-reproduction toolkit. It connects model-generated candidates to real Lean compilation, structured compiler feedback, retrieval, bounded retries, and auditable proof artifacts. It does not train or fine-tune models.
 

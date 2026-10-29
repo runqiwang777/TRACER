@@ -1,6 +1,6 @@
-# ACL 2027 因果反馈实验执行手册
+# v3 因果反馈实验执行手册
 
-本手册描述 ACL 2027 嵌套实验的当前 v3 协议。历史 `repair24` 和既有 TRACER-REAL v2 题库不改写，也不作为新实验结果。
+本手册描述 v3 嵌套实验协议。历史 `repair24` 和既有 TRACER-REAL v2 题库不改写，也不作为新实验结果。公开命名及既有批次兼容边界见 [RELEASE_NAMING.md](RELEASE_NAMING.md)。
 
 2026-09-26 的 v1 正式尝试在发出 88 次 seed 请求后、构造第 89 个请求之前停止：冻结的 12,000 字符提示视图无法容纳 5 个完整目标声明。v2 在任何替代调用前仅把提示视图增至 24,000 字符；随后其 GLM 长请求在统一 180 秒读取上限下重复超时，批次在 291 次调用尝试后中止。v2 保留 281 条有效 seed 记录、9 条已归档传输失败尝试和 1 次无对应结果的调用预留。两批均原样保留并排除出正式分析。
 
@@ -19,9 +19,9 @@ v3 在发送任何 v3 题库请求前，将三家 provider 的唯一运行参数
 
 科学协议与两个运行时预注册位于：
 
-- `experiments/preregistrations/tracer_acl2027_protocol_v3.json`
-- `experiments/preregistrations/tracer_acl2027_extended_v3.json`
-- `experiments/preregistrations/tracer_acl2027_minimax_confirmatory_v3.json`
+- `experiments/preregistrations/tracer_protocol_v3.json`
+- `experiments/preregistrations/tracer_extended_v3.json`
+- `experiments/preregistrations/tracer_minimax_confirmatory_v3.json`
 
 v1/v2 文件继续留在仓库中用于解释中止批次，不得与 v3 混合。
 
@@ -30,7 +30,7 @@ v1/v2 文件继续留在仓库中用于解释中止批次，不得与 v3 混合�
 ### 1. 离线审计
 
 ```powershell
-python src/acl2027.py audit
+python src/v3.py audit
 ```
 
 只有在输出中同时出现 `ok: true`、`retrieval_declaration_leaks: 0`、`prompt_view_failures: 0`、`prompt_source_characters: 24000` 和 `ready_for_benchmark_run: true` 时才可继续。该命令网络调用数为 0。
@@ -38,7 +38,7 @@ python src/acl2027.py audit
 ### 2. 三个一方 provider 的合成定理预检
 
 ```powershell
-.\scripts\preflight_acl2027.ps1
+.\scripts\preflight_v3.ps1
 ```
 
 脚本会依次隐藏读取 DeepSeek、智谱 BigModel 和 MiniMax 密钥；密钥只存在于当前进程环境，结束时删除。预检只发送合成的 `True` 定理，不读取也不发送 TRACER-REAL。
@@ -46,7 +46,7 @@ python src/acl2027.py audit
 若只有 MiniMax 认证失败，不要重复请求已经通过的 DeepSeek/GLM；更换或核对 MiniMax 一方平台密钥后单独运行：
 
 ```powershell
-.\scripts\preflight_acl2027.ps1 -Provider MiniMax
+.\scripts\preflight_v3.ps1 -Provider MiniMax
 ```
 
 ### 3. 付费实验
@@ -55,12 +55,12 @@ python src/acl2027.py audit
 
 冻结端点与模型分别为 DeepSeek `deepseek-v4-pro`、智谱 BigModel `glm-4.5` 和 MiniMax 中国区 `MiniMax-M3`。三者均通过各自一方域名调用；GLM 与 MiniMax 使用其官方 OpenAI-compatible Chat Completions 接口。MiniMax 密钥来自 `platform.minimax.cn`，因此端点冻结为 `https://api.minimax.cn/v1/chat/completions`，并设置 `reasoning_split=true`，使思考内容与送入 Lean 的最终候选分离。GLM 与 MiniMax 中国区价格未在本次冻结中录入，相关成本必须报告为未知而不是 0。
 
-正式运行统一通过 `scripts/run_acl2027_formal.ps1`。脚本为每次实验创建独立会话根目录，并把扩展批次与 MiniMax 确认批次分别写入 `extended/` 和 `minimax-confirmatory/`；密钥只在当前 PowerShell 进程中存在。
+正式运行统一通过 `scripts/run_v3_formal.ps1`。脚本为每次实验创建独立会话根目录，并把扩展批次与 MiniMax 确认批次分别写入 `extended/` 和 `minimax-confirmatory/`；密钥只在当前 PowerShell 进程中存在。
 
 当前冻结配置没有写入 GLM 与 MiniMax 中国区价格，因此不能伪造美元估值，也不能启用依赖完整价格的本地美元预留。首次正式运行必须显式确认不设置脚本级美元上限，并在三个供应商后台另设账户级预算：
 
 ```powershell
-.\scripts\run_acl2027_formal.ps1 `
+.\scripts\run_v3_formal.ps1 `
   -Batch All `
   -NoCostLimit
 ```
@@ -70,9 +70,9 @@ python src/acl2027.py audit
 脚本启动后会打印唯一 `RunRoot`。若终端、网络或机器中断，必须使用同一个根目录续跑：
 
 ```powershell
-.\scripts\run_acl2027_formal.ps1 `
+.\scripts\run_v3_formal.ps1 `
   -Batch All `
-  -RunRoot "results/acl2027-formal-v3-YYYYMMDD-HHMMSS-xxxxxxxx" `
+  -RunRoot "results/v3-formal-YYYYMMDD-HHMMSS-xxxxxxxx" `
   -Resume `
   -NoCostLimit
 ```
@@ -85,4 +85,4 @@ python src/acl2027.py audit
 
 ## 当前状态
 
-v3 离线预注册、五项目/254 题门禁、六类错误覆盖、检索声明重合审计、24,000 字符完整目标门禁、统一 600 秒请求超时和可续跑正式入口已实现。v1 的 88 次调用与 v2 的 291 次尝试都属于中止批次，不得合并或进入 v3 分析。v3 必须从新的 `acl2027-formal-v3-*` 根目录启动，并由正式脚本重新完成三家合成预检。当前没有可用于结论的正式付费结果。
+v3 离线预注册、五项目/254 题门禁、六类错误覆盖、检索声明重合审计、24,000 字符完整目标门禁、统一 600 秒请求超时和可续跑正式入口已实现。v1 的 88 次调用与 v2 的 291 次尝试都属于中止批次，不得合并或进入 v3 分析。本公开版本的新运行使用 `v3-formal-*` 根目录，并由正式脚本完成三家合成预检；既有批次仍使用其原工作副本与原目录续跑。本次上传不包含经过完整审计的正式 provider 最终结果包，不据此推断本机运行是否完成。

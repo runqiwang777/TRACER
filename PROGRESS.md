@@ -1,5 +1,9 @@
 # TRACER 当前进度
 
+2026-10-29：公开文档、命令、配置路径、协议标识和密钥变量统一使用 v3 命名；冻结实验参数与日期保持原值，本机原始批次未改写。既有批次继续使用其原工作副本与原目录；详见 [公开命名说明](docs/RELEASE_NAMING.md)。
+
+本轮完整 Python 回归共 250 项：248 项通过、2 项平台专属测试跳过。v3 离线审计与 7 份配置/协议的研究参数一致性检查通过；不调用付费 API。
+
 本文件只记录本仓库实际包含的当前代码、协议和发布工件。早期 repair24 付费实验、旧 pilot、FATE-M 中间产物及其完整历史归档不随本次上传。
 
 ## 已具备的交付
@@ -12,11 +16,11 @@
 | SP v2 | `published/security-study-tracer-sp-v2/` | 12 个冻结危险案例在编译前拒绝，8 个正常对照由 Lean 编译；不代表完整沙箱或零风险。 |
 | SP Linux isolation | `published/security-isolation-tracer-sp-v1/` | 单次 Linux 容器运行观察 14/14 项冻结控制；Windows Docker Desktop 仍待测。 |
 | TRACER-REAL v2 | `benchmarks/real_repairs/tracer_real_v2/` 与对应筛查账本 | 254 道题、五个独立 test 项目；题库已冻结，provider 最终结果包未随本次上传。 |
-| ACL 2027 causal protocol v3 | `docs/ACL2027_EXPERIMENT_PROTOCOL.md`、`experiments/preregistrations/`、`scripts/run_acl2027_formal.ps1` | 运行门禁和恢复机制已实现；当前上传内容不含经过全量审计的正式 provider 结果。 |
+| v3 causal protocol | `docs/V3_EXPERIMENT_PROTOCOL.md`、`experiments/preregistrations/`、`scripts/run_v3_formal.ps1` | 运行门禁和恢复机制已实现；当前上传内容不含经过全量审计的正式 provider 结果。 |
 
 ## 当前实验状态
 
-ACL 2027 v3 的原始运行目录与当前可能进行中的批次留在本机。本次上传未包括经全量审计的最终结果包，因此不在仓库中报告该批次的性能或因果结果，也不推断本机运行是否已经完成。后续发布应基于原输出目录审计，保留失败工件、模型配置、完整脱敏轨迹和成功证明。
+v3 的原始运行目录与当前可能进行中的批次留在本机。本次上传未包括经全量审计的最终结果包，因此不在仓库中报告该批次的性能或因果结果，也不推断本机运行是否已经完成。后续发布应基于原输出目录审计，保留失败工件、模型配置、完整脱敏轨迹和成功证明。
 
 2026-10-28 本次整理副本的 Python 回归共 248 项：246 项通过、2 项 Linux 专属符号链接检查跳过；不含付费模型调用。
 
@@ -37,6 +41,6 @@ python -m leancapsule verify capsules
 
 ## 后续优先项
 
-1. 完成 ACL 2027 v3 provider 批次并通过轨迹、复编译和发布审计。
+1. 完成 v3 provider 批次并通过轨迹、复编译和发布审计。
 2. 完成人工计时与跨环境复验，再把结果与完整脱敏工件一起交付。
 3. 扩展 SP 容器隔离至 Windows Docker Desktop，并保留 Linux 单平台证据边界。

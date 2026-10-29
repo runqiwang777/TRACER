@@ -1,9 +1,9 @@
 {
   "version": "tracer-causal-preregistration-v1",
   "status": "frozen-before-provider-run",
-  "planned_experiment_id": "tracer-acl2027-extended-v3",
+  "planned_experiment_id": "tracer-minimax-confirmatory-v3",
   "registered_at_utc": "2026-09-27T07:32:38Z",
-  "registration_medium": "版本控制仓库中的 ACL 2027 v3 机器可读预注册；在 v2 因 180 秒读取超时中止并保留后、冻结于任何 v3 目标题库 provider 调用之前。",
+  "registration_medium": "版本控制仓库中的 v3 机器可读预注册；在 v2 因 180 秒读取超时中止并保留后、冻结于任何 v3 目标题库 provider 调用之前。",
   "benchmark": {
     "version": "tracer-real-v2",
     "split_policy": "upstream_project_disjoint",
@@ -52,25 +52,14 @@
   },
   "models": [
     {
-      "id": "deepseek_v4_pro",
-      "model": "deepseek-v4-pro",
-      "api_url": "https://api.deepseek.com/chat/completions",
+      "id": "minimax_m3",
+      "model": "MiniMax-M3",
+      "api_url": "https://api.minimax.cn/v1/chat/completions",
       "temperature": 0,
       "max_tokens": 12000,
       "provider_kind": "openai_compatible",
       "wire_api": "chat_completions",
-      "thinking": "enabled",
-      "reasoning_effort": "high",
-      "request_timeout_seconds": 600
-    },
-    {
-      "id": "glm_4_5",
-      "model": "glm-4.5",
-      "api_url": "https://open.bigmodel.cn/api/paas/v4/chat/completions",
-      "temperature": 0,
-      "max_tokens": 12000,
-      "provider_kind": "openai_compatible",
-      "wire_api": "chat_completions",
+      "reasoning_split": true,
       "request_timeout_seconds": 600
     }
   ],
@@ -78,13 +67,8 @@
     "protocol_version": "tracer-causal-feedback-v1",
     "arms": [
       "content_free_retry",
-      "true_raw",
-      "true_normalized",
       "true_structured",
-      "irrelevant_matched",
-      "counterfactual",
-      "retrieval_only",
-      "adaptive"
+      "counterfactual"
     ],
     "repeats": 3,
     "branch_attempts": 1,
@@ -115,9 +99,9 @@
     "完整八臂模型额外报告 raw、normalized、irrelevant、retrieval 与 adaptive 探索性对比"
   ],
   "stopping_rule": {
-    "maximum_seed_generations": 1524,
-    "maximum_branch_generations": 12192,
-    "maximum_provider_calls": 13716,
+    "maximum_seed_generations": 762,
+    "maximum_branch_generations": 2286,
+    "maximum_provider_calls": 3048,
     "adaptive_early_stopping": false,
     "transport_policy": "停止并人工核对本地记录；只允许严格续跑，不得删除失败记录后重开。"
   },

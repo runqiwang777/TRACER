@@ -3,10 +3,10 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SCRIPT = ROOT / "scripts" / "run_acl2027_formal.ps1"
+SCRIPT = ROOT / "scripts" / "run_v3_formal.ps1"
 
 
-class Acl2027RunnerScriptTest(unittest.TestCase):
+class V3RunnerScriptTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.script = SCRIPT.read_text(encoding="utf-8")
@@ -14,31 +14,31 @@ class Acl2027RunnerScriptTest(unittest.TestCase):
     def test_uses_independent_batch_directories_and_frozen_inputs(self):
         self.assertIn('Directory = "extended"', self.script)
         self.assertIn('Directory = "minimax-confirmatory"', self.script)
-        self.assertIn("tracer_acl2027_extended_v3.json", self.script)
-        self.assertIn("tracer_acl2027_minimax_confirmatory_v3.json", self.script)
+        self.assertIn("tracer_extended_v3.json", self.script)
+        self.assertIn("tracer_minimax_confirmatory_v3.json", self.script)
         self.assertIn("tracer_real_v2/manifest.json", self.script)
-        self.assertIn('"acl2027-formal-v3-$stamp-$suffix"', self.script)
+        self.assertIn('"v3-formal-$stamp-$suffix"', self.script)
 
     def test_resume_is_explicit_and_preserves_completed_batches(self):
         self.assertIn("-Resume requires the exact existing -RunRoot", self.script)
         self.assertIn("superseded v1/v2 protocol", self.script)
-        self.assertIn("tracer-acl2027-causal-protocol-v3", self.script)
-        self.assertIn('Write-Host "ACL 2027 run root: $RunRoot"', self.script)
+        self.assertIn("tracer-causal-study-protocol-v3", self.script)
+        self.assertIn('Write-Host "v3 run root: $RunRoot"', self.script)
         self.assertIn('$runArguments += "--resume"', self.script)
         self.assertIn("already complete and passed audit; skipping it", self.script)
         self.assertNotIn("Remove-Item -Recurse", self.script)
 
     def test_failure_logs_and_artifacts_are_retained(self):
-        self.assertIn('schema_version = "tracer-acl2027-runner-failure-v1"', self.script)
+        self.assertIn('schema_version = "tracer-v3-runner-failure-v1"', self.script)
         self.assertIn("artifacts_retained = $true", self.script)
         self.assertIn("Tee-Object -FilePath $LogPath", self.script)
 
     def test_keys_are_hidden_and_removed(self):
         self.assertIn("Read-Host $Prompt -AsSecureString", self.script)
         for name in (
-            "TRACER_ACL_DEEPSEEK_KEY",
-            "TRACER_ACL_GLM_KEY",
-            "TRACER_ACL_MINIMAX_KEY",
+            "TRACER_V3_DEEPSEEK_KEY",
+            "TRACER_V3_GLM_KEY",
+            "TRACER_V3_MINIMAX_KEY",
         ):
             self.assertIn(f"Remove-Item Env:{name}", self.script)
 

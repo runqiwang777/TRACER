@@ -1,5 +1,5 @@
 {
-  "version": "tracer-acl2027-causal-protocol-v3",
+  "version": "tracer-causal-study-protocol-v3",
   "status": "frozen-after-aborted-v2-before-v3-provider-run",
   "registered_at_utc": "2026-09-27T07:32:38Z",
   "benchmark": {
@@ -39,21 +39,21 @@
       "family": "DeepSeek",
       "model_id": "deepseek-v4-pro",
       "provider": "DeepSeek first-party API",
-      "runtime_config": "experiments/causal_feedback.tracer_acl2027_extended_v3.json",
+      "runtime_config": "experiments/causal_feedback.tracer_extended_v3.json",
       "matrix": "extended"
     },
     {
       "family": "GLM",
       "model_id": "glm-4.5",
       "provider": "Zhipu BigModel first-party Chat Completions API",
-      "runtime_config": "experiments/causal_feedback.tracer_acl2027_extended_v3.json",
+      "runtime_config": "experiments/causal_feedback.tracer_extended_v3.json",
       "matrix": "extended"
     },
     {
       "family": "MiniMax",
       "model_id": "MiniMax-M3",
       "provider": "MiniMax China first-party OpenAI-compatible Chat Completions API",
-      "runtime_config": "experiments/causal_feedback.tracer_acl2027_minimax_confirmatory_v3.json",
+      "runtime_config": "experiments/causal_feedback.tracer_minimax_confirmatory_v3.json",
       "matrix": "confirmatory"
     }
   ],
@@ -82,21 +82,21 @@
   "runtime_freeze": {
     "required_before_benchmark_calls": true,
     "records": [
-      "experiments/preregistrations/tracer_acl2027_extended_v3.json",
-      "experiments/preregistrations/tracer_acl2027_minimax_confirmatory_v3.json"
+      "experiments/preregistrations/tracer_extended_v3.json",
+      "experiments/preregistrations/tracer_minimax_confirmatory_v3.json"
     ],
     "synthetic_preflight_is_not_a_benchmark_call": true,
     "failed_preflight_does_not_authorize_model_substitution": true,
     "superseded_partial_runs": [
       {
-        "protocol": "tracer-acl2027-causal-protocol-v1",
+        "protocol": "tracer-causal-study-protocol-v1",
         "dispatched_calls": 88,
         "failure_before_call": 89,
         "reason": "冻结的 12000 字符提示视图无法容纳 5 个完整目标声明；旧批次保留但不得进入 v2 或 v3 分析。",
         "changed_field_only": "prompt_source_characters: 12000 -> 24000"
       },
       {
-        "protocol": "tracer-acl2027-causal-protocol-v2",
+        "protocol": "tracer-causal-study-protocol-v2",
         "attempted_provider_calls": 291,
         "active_seed_records": 281,
         "archived_transport_attempts": 9,

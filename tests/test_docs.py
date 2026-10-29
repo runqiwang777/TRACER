@@ -12,7 +12,7 @@ class DocumentationConsistencyTest(unittest.TestCase):
         self.assertIn("[简体中文](README.zh-CN.md)", en)
         self.assertIn("[English](README.md)", zh)
         for readme in (en, zh):
-            self.assertIn("docs/ACL2027_EXPERIMENT_PROTOCOL.md", readme)
+            self.assertIn("docs/V3_EXPERIMENT_PROTOCOL.md", readme)
             self.assertIn("docs/security_policy.md", readme)
             self.assertNotIn("historical/", readme)
             self.assertNotIn("published/research-six-arm-313f437f", readme)

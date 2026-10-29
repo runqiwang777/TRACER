@@ -4,7 +4,7 @@
       "id": "minimax_m3",
       "model": "MiniMax-M3",
       "api_url": "https://api.minimax.cn/v1/chat/completions",
-      "api_key_env": "TRACER_ACL_MINIMAX_KEY",
+      "api_key_env": "TRACER_V3_MINIMAX_KEY",
       "temperature": 0,
       "max_tokens": 12000,
       "request_timeout_seconds": 600,

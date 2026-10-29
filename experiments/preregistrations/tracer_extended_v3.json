@@ -1,9 +1,9 @@
 {
   "version": "tracer-causal-preregistration-v1",
   "status": "frozen-before-provider-run",
-  "planned_experiment_id": "tracer-acl2027-extended-v2",
-  "registered_at_utc": "2026-09-26T07:06:06Z",
-  "registration_medium": "版本控制仓库中的 ACL 2027 v2 机器可读预注册；在 v1 因提示预算实现错误中止并保留后、冻结于任何 v2 目标题库 provider 调用之前。",
+  "planned_experiment_id": "tracer-extended-v3",
+  "registered_at_utc": "2026-09-27T07:32:38Z",
+  "registration_medium": "版本控制仓库中的 v3 机器可读预注册；在 v2 因 180 秒读取超时中止并保留后、冻结于任何 v3 目标题库 provider 调用之前。",
   "benchmark": {
     "version": "tracer-real-v2",
     "split_policy": "upstream_project_disjoint",
@@ -60,7 +60,8 @@
       "provider_kind": "openai_compatible",
       "wire_api": "chat_completions",
       "thinking": "enabled",
-      "reasoning_effort": "high"
+      "reasoning_effort": "high",
+      "request_timeout_seconds": 600
     },
     {
       "id": "glm_4_5",
@@ -69,7 +70,8 @@
       "temperature": 0,
       "max_tokens": 12000,
       "provider_kind": "openai_compatible",
-      "wire_api": "chat_completions"
+      "wire_api": "chat_completions",
+      "request_timeout_seconds": 600
     }
   ],
   "design": {
@@ -96,7 +98,8 @@
       "prompts/causal_branch.txt",
       "prompts/proof_contract.txt"
     ],
-    "prompt_source_characters": 24000
+    "prompt_source_characters": 24000,
+    "provider_request_timeout_seconds": 600
   },
   "primary_analysis": {
     "population": "eligible_first_failures_on_preregistered_v2_test_projects",

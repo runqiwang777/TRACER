@@ -1,5 +1,7 @@
 .lake/
 __pycache__/
+# 原始实验及其旧命名目录仅留本地，公开前必须单独脱敏导出。
+/results/
 auth.json
 api.txt
 .codex-ax-live-deps*/
@@ -13,7 +15,7 @@ results/solutions/
 /results/research*/
 /results/feedback-study-*/
 /results/causal-*/
-/results/acl2027-formal*/
+/results/v3-formal*/
 /results/tracer-real-v2-screening/
 /results/human-*/
 /results/sp-isolation-*/

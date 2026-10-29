@@ -124,13 +124,13 @@ end Demo
 
     def test_configured_prompt_budget_is_frozen_in_preregistration(self):
         config = validate_config(
-            ROOT / "experiments/causal_feedback.tracer_acl2027_extended_v2.json"
+            ROOT / "experiments/causal_feedback.tracer_extended_v2.json"
         )
         benchmark = load_benchmark(
             ROOT / "benchmarks/real_repairs/tracer_real_v2/manifest.json"
         )
         prereg = json.loads(
-            (ROOT / "experiments/preregistrations/tracer_acl2027_extended_v2.json").read_text(
+            (ROOT / "experiments/preregistrations/tracer_extended_v2.json").read_text(
                 encoding="utf-8"
             )
         )

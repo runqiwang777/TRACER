@@ -19,15 +19,15 @@ Set-Location -LiteralPath $repoRoot
 $batchSpecs = @{
     Extended = @{
         Directory = "extended"
-        Config = "experiments/causal_feedback.tracer_acl2027_extended_v3.json"
-        Preregistration = "experiments/preregistrations/tracer_acl2027_extended_v3.json"
-        KeyNames = @("TRACER_ACL_DEEPSEEK_KEY", "TRACER_ACL_GLM_KEY")
+        Config = "experiments/causal_feedback.tracer_extended_v3.json"
+        Preregistration = "experiments/preregistrations/tracer_extended_v3.json"
+        KeyNames = @("TRACER_V3_DEEPSEEK_KEY", "TRACER_V3_GLM_KEY")
     }
     MiniMax = @{
         Directory = "minimax-confirmatory"
-        Config = "experiments/causal_feedback.tracer_acl2027_minimax_confirmatory_v3.json"
-        Preregistration = "experiments/preregistrations/tracer_acl2027_minimax_confirmatory_v3.json"
-        KeyNames = @("TRACER_ACL_MINIMAX_KEY")
+        Config = "experiments/causal_feedback.tracer_minimax_confirmatory_v3.json"
+        Preregistration = "experiments/preregistrations/tracer_minimax_confirmatory_v3.json"
+        KeyNames = @("TRACER_V3_MINIMAX_KEY")
     }
 }
 $selectedBatches = if ($Batch -eq "All") { @("Extended", "MiniMax") } else { @($Batch) }
@@ -59,7 +59,7 @@ if (-not $NoCostLimit) {
 if ([string]::IsNullOrWhiteSpace($RunRoot)) {
     $stamp = Get-Date -Format "yyyyMMdd-HHmmss"
     $suffix = [Guid]::NewGuid().ToString("N").Substring(0, 8)
-    $RunRoot = Join-Path "results" "acl2027-formal-v3-$stamp-$suffix"
+    $RunRoot = Join-Path "results" "v3-formal-$stamp-$suffix"
 }
 if (-not [IO.Path]::IsPathRooted($RunRoot)) {
     $RunRoot = Join-Path $repoRoot $RunRoot
@@ -98,7 +98,7 @@ function Invoke-LoggedPython {
         $failurePath = Join-Path $attemptRoot ("failure-{0}-{1}-{2}.json" -f (Get-Date -Format "yyyyMMdd-HHmmss"), $BatchName.ToLowerInvariant(), $Phase)
         $relativeLog = $LogPath.Substring($RunRoot.Length).TrimStart([char[]]@('\', '/')).Replace("\", "/")
         Write-JsonFile $failurePath ([ordered]@{
-            schema_version = "tracer-acl2027-runner-failure-v1"
+            schema_version = "tracer-v3-runner-failure-v1"
             recorded_at = (Get-Date).ToUniversalTime().ToString("o")
             batch = $BatchName
             phase = $Phase
@@ -141,7 +141,7 @@ if ($Resume) {
         throw "Resume root has no run contract: $contractPath"
     }
     $contract = Get-Content -LiteralPath $contractPath -Raw -Encoding UTF8 | ConvertFrom-Json
-    if ($contract.protocol -ne "tracer-acl2027-causal-protocol-v3") {
+    if ($contract.protocol -ne "tracer-causal-study-protocol-v3") {
         throw "This run root belongs to a superseded v1/v2 protocol. Retain it, but start a new v3 run root."
     }
     $savedBatches = @($contract.selected_batches)
@@ -155,9 +155,9 @@ else {
     }
     New-Item -ItemType Directory -Path $attemptRoot -Force | Out-Null
     Write-JsonFile $contractPath ([ordered]@{
-        schema_version = "tracer-acl2027-run-contract-v1"
+        schema_version = "tracer-v3-run-contract-v1"
         created_at = (Get-Date).ToUniversalTime().ToString("o")
-        protocol = "tracer-acl2027-causal-protocol-v3"
+        protocol = "tracer-causal-study-protocol-v3"
         benchmark = "tracer-real-v2"
         selected_batches = $selectedBatches
         batch_directories = @($selectedBatches | ForEach-Object { $batchSpecs[$_].Directory })
@@ -170,11 +170,11 @@ else {
 $attemptId = (Get-Date -Format "yyyyMMdd-HHmmss") + "-" + [Guid]::NewGuid().ToString("N").Substring(0, 8)
 $attemptDirectory = Join-Path $attemptRoot $attemptId
 New-Item -ItemType Directory -Path $attemptDirectory -Force | Out-Null
-Write-Host "ACL 2027 run root: $RunRoot"
+Write-Host "v3 run root: $RunRoot"
 
 try {
     Invoke-LoggedPython `
-        -Arguments @("src/acl2027.py", "audit") `
+        -Arguments @("src/v3.py", "audit") `
         -LogPath (Join-Path $attemptDirectory "offline-audit.log") `
         -Phase "offline-audit" `
         -BatchName $selectedBatches[0]
@@ -204,11 +204,11 @@ try {
     }
 
     if ($pending -contains "Extended") {
-        Set-HiddenApiKey "DeepSeek API key" "TRACER_ACL_DEEPSEEK_KEY"
-        Set-HiddenApiKey "Zhipu BigModel GLM API key" "TRACER_ACL_GLM_KEY"
+        Set-HiddenApiKey "DeepSeek API key" "TRACER_V3_DEEPSEEK_KEY"
+        Set-HiddenApiKey "Zhipu BigModel GLM API key" "TRACER_V3_GLM_KEY"
     }
     if ($pending -contains "MiniMax") {
-        Set-HiddenApiKey "MiniMax API key" "TRACER_ACL_MINIMAX_KEY"
+        Set-HiddenApiKey "MiniMax API key" "TRACER_V3_MINIMAX_KEY"
     }
 
     if (-not $SkipPreflight) {
@@ -261,16 +261,16 @@ try {
     }
 
     Write-JsonFile (Join-Path $runnerRoot "status.json") ([ordered]@{
-        schema_version = "tracer-acl2027-runner-status-v1"
+        schema_version = "tracer-v3-runner-status-v1"
         status = "complete"
         completed_at = (Get-Date).ToUniversalTime().ToString("o")
         selected_batches = $selectedBatches
         run_root = "."
     })
-    Write-Host "All selected ACL 2027 batches completed and passed audit: $RunRoot"
+    Write-Host "All selected v3 batches completed and passed audit: $RunRoot"
 }
 finally {
-    Remove-Item Env:TRACER_ACL_DEEPSEEK_KEY -ErrorAction SilentlyContinue
-    Remove-Item Env:TRACER_ACL_GLM_KEY -ErrorAction SilentlyContinue
-    Remove-Item Env:TRACER_ACL_MINIMAX_KEY -ErrorAction SilentlyContinue
+    Remove-Item Env:TRACER_V3_DEEPSEEK_KEY -ErrorAction SilentlyContinue
+    Remove-Item Env:TRACER_V3_GLM_KEY -ErrorAction SilentlyContinue
+    Remove-Item Env:TRACER_V3_MINIMAX_KEY -ErrorAction SilentlyContinue
 }

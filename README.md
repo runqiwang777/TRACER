@@ -12,7 +12,7 @@ TRACER is a Lean 4 proof-repair and failure-reproduction toolkit. It connects mo
 
 ## Current deliverables
 
-- **Repair and causal-study infrastructure:** frozen TRACER-REAL v2 benchmark enrollment and ACL 2027 preregistered protocol. This upload does not include an audited final provider result package; local run status is not inferred from the repository contents.
+- **Repair and causal-study infrastructure:** frozen TRACER-REAL v2 benchmark enrollment and v3 preregistered protocol. This upload does not include an audited final provider result package; local run status is not inferred from the repository contents.
 - **Compiler feedback:** raw, normalized, and structured diagnostic layers with retained source evidence and offline failure fixtures.
 - **LeanCapsule:** 24 replayable failures across Std, Mathlib, and project-local environments.
 - **Security:** SP-1–SP-12 pre-compilation policy cases with 8 benign controls; one Linux container run observed 14/14 declared controls. Windows Docker Desktop remains pending.
@@ -41,9 +41,9 @@ For a real model request, configure a supported provider as described in [API_GU
 
 ## Research design
 
-ACL 2027 uses three confirmatory conditions and five additional extension conditions. SP-1–SP-12 are separate security policies, not experiment arms. See the [frozen experiment protocol](docs/ACL2027_EXPERIMENT_PROTOCOL.md) and [security policy](docs/security_policy.md).
+v3 uses three confirmatory conditions and five additional extension conditions. SP-1–SP-12 are separate security policies, not experiment arms. See the [frozen experiment protocol](docs/V3_EXPERIMENT_PROTOCOL.md) and [security policy](docs/security_policy.md).
 
-The frozen TRACER-REAL v2 test set contains 254 repairs from five independent upstream projects. ACL protocol v3 freezes a nested design for DeepSeek and GLM across eight arms and MiniMax across three confirmatory arms. This repository currently makes no performance or causal claim from the provider batch.
+The frozen TRACER-REAL v2 test set contains 254 repairs from five independent upstream projects. The v3 protocol freezes a nested design for DeepSeek and GLM across eight arms and MiniMax across three confirmatory arms. This repository currently makes no performance or causal claim from the provider batch.
 
 ## Validation
 
@@ -64,7 +64,8 @@ Capsule verification needs the pinned project dependencies. Offline tests and au
 
 - [Provider/API setup](docs/API_GUIDE.md)
 - [Compiler feedback protocol](docs/COMPILER_FEEDBACK_V1.md) · [feedback adoption analysis](docs/FEEDBACK_ADOPTION_V1.md)
-- [TRACER-REAL v2 benchmark](docs/TRACER_REAL_V2.md) · [ACL 2027 experiment](docs/ACL2027_EXPERIMENT_PROTOCOL.md)
+- [TRACER-REAL v2 benchmark](docs/TRACER_REAL_V2.md) · [v3 experiment](docs/V3_EXPERIMENT_PROTOCOL.md)
+- [v3 release naming and existing runs](docs/RELEASE_NAMING.md)
 - [LeanCapsule format](docs/CAPSULE_FORMAT.md) · [failure gallery](capsules/index.md)
 - [SP security policy](docs/security_policy.md) · [isolation protocol](docs/SP_ISOLATION_V1.md)
 - [Related work](docs/RELATED_WORK.md) · [Progress register](PROGRESS.md)

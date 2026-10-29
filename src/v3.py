@@ -1,4 +1,4 @@
-"""ACL 2027 因果反馈实验的离线预注册、题库审计与运行计划。"""
+"""v3 因果反馈实验的离线预注册、题库审计与运行计划。"""
 
 from __future__ import annotations
 
@@ -23,16 +23,16 @@ from tracer_real_v2 import (
 )
 
 
-ACL_PROTOCOL_VERSION = "tracer-acl2027-causal-protocol-v3"
+STUDY_PROTOCOL_VERSION = "tracer-causal-study-protocol-v3"
 PROVIDER_REQUEST_TIMEOUT_SECONDS = 600
 CONFIRMATORY_ARMS = ("content_free_retry", "true_structured", "counterfactual")
-PROTOCOL_PATH = ROOT / "experiments/preregistrations/tracer_acl2027_protocol_v3.json"
+PROTOCOL_PATH = ROOT / "experiments/preregistrations/tracer_protocol_v3.json"
 BENCHMARK_PATH = ROOT / "benchmarks/real_repairs/tracer_real_v2/manifest.json"
 CONTRACT_PATH = ROOT / "benchmarks/real_repairs/tracer_real_v2.enrollment.json"
-EXTENDED_CONFIG_PATH = ROOT / "experiments/causal_feedback.tracer_acl2027_extended_v3.json"
-MINIMAX_CONFIG_PATH = ROOT / "experiments/causal_feedback.tracer_acl2027_minimax_confirmatory_v3.json"
-EXTENDED_PREREG_PATH = ROOT / "experiments/preregistrations/tracer_acl2027_extended_v3.json"
-MINIMAX_PREREG_PATH = ROOT / "experiments/preregistrations/tracer_acl2027_minimax_confirmatory_v3.json"
+EXTENDED_CONFIG_PATH = ROOT / "experiments/causal_feedback.tracer_extended_v3.json"
+MINIMAX_CONFIG_PATH = ROOT / "experiments/causal_feedback.tracer_minimax_confirmatory_v3.json"
+EXTENDED_PREREG_PATH = ROOT / "experiments/preregistrations/tracer_extended_v3.json"
+MINIMAX_PREREG_PATH = ROOT / "experiments/preregistrations/tracer_minimax_confirmatory_v3.json"
 
 
 def _runtime_model_view(model: dict[str, Any]) -> dict[str, Any]:
@@ -65,10 +65,10 @@ def validate_scientific_protocol(
         "nested_design", "model_roles", "execution_order", "primary_analysis",
         "negative_control", "runtime_freeze", "stopping_rule", "claim_gate",
     }
-    if set(protocol) != required or protocol.get("version") != ACL_PROTOCOL_VERSION:
-        raise ValueError("ACL 2027 科学协议版本或顶层字段不匹配")
+    if set(protocol) != required or protocol.get("version") != STUDY_PROTOCOL_VERSION:
+        raise ValueError("v3 科学协议版本或顶层字段不匹配")
     if protocol.get("status") != "frozen-after-aborted-v2-before-v3-provider-run":
-        raise ValueError("ACL 2027 v3 协议必须在 v3 provider 题库调用前冻结")
+        raise ValueError("v3 协议必须在 v3 provider 题库调用前冻结")
 
     base_contract = read_json(CONTRACT_PATH)
     validate_contract(base_contract)
@@ -83,21 +83,21 @@ def validate_scientific_protocol(
         "projects": counts["test_projects"],
         "tasks": counts["test_tasks"],
     }:
-        raise ValueError("ACL 2027 协议的冻结题库与 TRACER-REAL v2 不一致")
+        raise ValueError("v3 协议的冻结题库与 TRACER-REAL v2 不一致")
 
     design = protocol["nested_design"]
     if design.get("confirmatory_arms") != list(CONFIRMATORY_ARMS):
-        raise ValueError("ACL 2027 确认性三臂发生漂移")
+        raise ValueError("v3 确认性三臂发生漂移")
     if design.get("extended_arms") != list(ARMS):
-        raise ValueError("ACL 2027 扩展八臂发生漂移")
+        raise ValueError("v3 扩展八臂发生漂移")
     if extended["arms"] != list(ARMS) or minimax["arms"] != list(CONFIRMATORY_ARMS):
-        raise ValueError("ACL 2027 运行配置与嵌套设计不一致")
+        raise ValueError("v3 运行配置与嵌套设计不一致")
     shared_fields = (
         "repeats", "compile_timeout", "order_seed", "branch_attempts", "benchmark_splits",
         "prompt_source_characters",
     )
     if any(extended.get(field) != minimax.get(field) for field in shared_fields):
-        raise ValueError("ACL 2027 两个运行配置的共享实验参数不一致")
+        raise ValueError("v3 两个运行配置的共享实验参数不一致")
     if (
         design.get("repeats") != extended["repeats"]
         or design.get("branch_attempts") != extended["branch_attempts"]
@@ -106,7 +106,7 @@ def validate_scientific_protocol(
         or design.get("same_first_candidate_required") is not True
         or design.get("performance_based_stopping") is not False
     ):
-        raise ValueError("ACL 2027 重复、分支或停止规则不一致")
+        raise ValueError("v3 重复、分支或停止规则不一致")
 
     active_models = {
         model["id"]: (model, "extended") for model in extended["models"]
@@ -115,7 +115,7 @@ def validate_scientific_protocol(
     }
     roles = protocol["model_roles"]
     if len(active_models) != 3 or len(roles) != 3:
-        raise ValueError("ACL 2027 必须冻结三个独立模型家族")
+        raise ValueError("v3 必须冻结三个独立模型家族")
     origins = set()
     families = set()
     for role in roles:
@@ -125,17 +125,17 @@ def validate_scientific_protocol(
             None,
         )
         if match is None or match[1] != role.get("matrix"):
-            raise ValueError("ACL 2027 模型角色与运行配置不一致")
+            raise ValueError("v3 模型角色与运行配置不一致")
         origins.add(urlsplit(match[0]["api_url"]).netloc.lower())
     if len(families) != 3 or len(origins) != 3:
-        raise ValueError("ACL 2027 三模型必须来自三个独立家族与一方 API 来源")
+        raise ValueError("v3 三模型必须来自三个独立家族与一方 API 来源")
     if sum(role.get("matrix") == "extended" for role in roles) != 2:
-        raise ValueError("ACL 2027 必须冻结两个完整八臂模型")
+        raise ValueError("v3 必须冻结两个完整八臂模型")
     if any(
         model.get("request_timeout_seconds") != PROVIDER_REQUEST_TIMEOUT_SECONDS
         for model, _matrix in active_models.values()
     ):
-        raise ValueError("ACL 2027 v3 的三个模型必须统一冻结 600 秒请求超时")
+        raise ValueError("v3 的三个模型必须统一冻结 600 秒请求超时")
 
     test_problems = [problem for problem in benchmark["problems"] if problem.get("split") == "test"]
     source_limit = prompt_source_limit(extended)
@@ -146,13 +146,13 @@ def validate_scientific_protocol(
         except ValueError:
             prompt_failures.append(problem["id"])
     if prompt_failures:
-        raise ValueError("ACL 2027 提示预算不能容纳完整目标声明：" + ", ".join(prompt_failures))
+        raise ValueError("v3 提示预算不能容纳完整目标声明：" + ", ".join(prompt_failures))
     examples = load_examples(ROOT / extended.get("examples_dir", "examples"))
     leaks = find_retrieval_leaks(
         [(problem["id"], problem["source_text"]) for problem in test_problems], examples,
     )
     if leaks:
-        raise ValueError("ACL 2027 检索语料与冻结测试声明重合")
+        raise ValueError("v3 检索语料与冻结测试声明重合")
     categories = sorted({problem["expected_error"] for problem in test_problems})
     return {
         "test_projects": counts["test_projects"],
@@ -176,7 +176,7 @@ def runtime_preregistration(
     seeds = test_tasks * config["repeats"] * len(config["models"])
     branches = seeds * len(config["arms"])
     registration_medium = (
-        "版本控制仓库中的 ACL 2027 v3 机器可读预注册；在 v2 因 180 秒读取超时中止并保留后、"
+        "版本控制仓库中的 v3 机器可读预注册；在 v2 因 180 秒读取超时中止并保留后、"
         "冻结于任何 v3 目标题库 provider 调用之前。"
     )
     return {
@@ -246,13 +246,13 @@ def freeze_runtime_records() -> dict[str, Any]:
     records = (
         (
             EXTENDED_PREREG_PATH,
-            runtime_preregistration(protocol, benchmark, extended, "tracer-acl2027-extended-v3"),
+            runtime_preregistration(protocol, benchmark, extended, "tracer-extended-v3"),
             extended,
         ),
         (
             MINIMAX_PREREG_PATH,
             runtime_preregistration(
-                protocol, benchmark, minimax, "tracer-acl2027-minimax-confirmatory-v3",
+                protocol, benchmark, minimax, "tracer-minimax-confirmatory-v3",
             ),
             minimax,
         ),
@@ -262,7 +262,7 @@ def freeze_runtime_records() -> dict[str, Any]:
         validate_preregistration_record(record, config, benchmark)
         if path.is_file():
             if read_json(path) != record:
-                raise ValueError("已存在的 ACL 运行时预注册与科学协议不一致：" + str(path))
+                raise ValueError("已存在的 v3 运行时预注册与科学协议不一致：" + str(path))
         else:
             write_json(path, record)
             written.append(str(path.relative_to(ROOT)))
@@ -287,7 +287,7 @@ def audit_readiness(require_runtime: bool = True) -> dict[str, Any]:
             except (OSError, ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
                 errors.append(path.name + "：" + str(exc))
         elif require_runtime:
-            errors.append("缺少 ACL 运行时预注册：" + path.name)
+            errors.append("缺少 v3 运行时预注册：" + path.name)
         runtime.append(row)
 
     plans = {
@@ -296,7 +296,7 @@ def audit_readiness(require_runtime: bool = True) -> dict[str, Any]:
     }
     maximum_calls = sum(plan["maximum_generations"] for plan in plans.values())
     if maximum_calls != protocol["stopping_rule"]["maximum_total_provider_calls"]:
-        errors.append("ACL 最大 provider 调用数与冻结运行计划不一致")
+        errors.append("v3 最大 provider 调用数与冻结运行计划不一致")
     return {
         "ok": not errors,
         "protocol_version": protocol["version"],

@@ -182,6 +182,6 @@ try {
 
 单题轨迹在 `results/agent_runs.jsonl`，正式实验轨迹在 `results/real_pilot_runs.jsonl`。只分享经过 `scripts/export_pilot.py` 导出的材料，不强制上传原始日志或 SQLite。
 
-## 9. ACL 2027 正式实验
+## 9. v3 正式实验
 
-当前多模型研究严格遵循 [ACL 2027 v3 执行协议](ACL2027_EXPERIMENT_PROTOCOL.md)。该协议包含 DeepSeek、GLM 和 MiniMax 的接口配置、预检、密钥处理、续跑和发布门禁。尚未完成的预检或付费运行不能作为模型结果；执行付费实验前请先检查服务商账户预算。
+当前多模型研究严格遵循 [v3 执行协议](V3_EXPERIMENT_PROTOCOL.md)。该协议包含 DeepSeek、GLM 和 MiniMax 的接口配置、预检、密钥处理、续跑和发布门禁。尚未完成的预检或付费运行不能作为模型结果；执行付费实验前请先检查服务商账户预算。

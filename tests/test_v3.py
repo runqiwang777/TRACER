@@ -8,7 +8,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from acl2027 import (  # noqa: E402
+from v3 import (  # noqa: E402
     BENCHMARK_PATH, EXTENDED_CONFIG_PATH, EXTENDED_PREREG_PATH,
     MINIMAX_CONFIG_PATH, MINIMAX_PREREG_PATH, PROTOCOL_PATH,
     PROVIDER_REQUEST_TIMEOUT_SECONDS, audit_readiness, validate_scientific_protocol,
@@ -17,7 +17,7 @@ from causal_feedback import validate_config, validate_preregistration_record  # 
 from research import load_benchmark  # noqa: E402
 
 
-class Acl2027ProtocolTest(unittest.TestCase):
+class V3ProtocolTest(unittest.TestCase):
     def test_offline_readiness_freezes_three_independent_families_without_leaks(self):
         report = audit_readiness()
         self.assertTrue(report["ok"], report["errors"])
@@ -84,22 +84,22 @@ class Acl2027ProtocolTest(unittest.TestCase):
             validate_scientific_protocol(protocol, benchmark, extended, minimax)
 
     def test_preflight_script_clears_all_three_keys_and_runs_audit_first(self):
-        script = (ROOT / "scripts/preflight_acl2027.ps1").read_text(encoding="utf-8")
+        script = (ROOT / "scripts/preflight_v3.ps1").read_text(encoding="utf-8")
         self.assertLess(
-            script.index("src/acl2027.py audit"),
+            script.index("src/v3.py audit"),
             script.index('Set-HiddenApiKey "DeepSeek API key"'),
         )
         for name in (
-            "TRACER_ACL_DEEPSEEK_KEY", "TRACER_ACL_GLM_KEY", "TRACER_ACL_MINIMAX_KEY",
+            "TRACER_V3_DEEPSEEK_KEY", "TRACER_V3_GLM_KEY", "TRACER_V3_MINIMAX_KEY",
         ):
             self.assertIn("Remove-Item Env:" + name, script)
         self.assertIn('ValidateSet("All", "Extended", "MiniMax")', script)
         self.assertIn('$Provider -in @("All", "MiniMax")', script)
         self.assertNotIn("Write-Output $plainValue", script)
 
-    def test_acl_cli_audit_is_offline_and_successful(self):
+    def test_v3_cli_audit_is_offline_and_successful(self):
         completed = subprocess.run(
-            [sys.executable, str(ROOT / "src/acl2027.py"), "audit"],
+            [sys.executable, str(ROOT / "src/v3.py"), "audit"],
             cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
         )
         self.assertEqual(completed.returncode, 0, completed.stderr)

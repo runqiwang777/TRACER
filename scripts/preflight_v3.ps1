@@ -32,27 +32,27 @@ function Set-HiddenApiKey {
 }
 
 try {
-    & python src/acl2027.py audit
+    & python src/v3.py audit
     if ($LASTEXITCODE -ne 0) {
-        throw "ACL 2027 offline readiness audit failed; no provider was called."
+        throw "v3 offline readiness audit failed; no provider was called."
     }
 
     if ($Provider -in @("All", "Extended")) {
-        Set-HiddenApiKey "DeepSeek API key" "TRACER_ACL_DEEPSEEK_KEY"
-        Set-HiddenApiKey "Zhipu BigModel GLM API key" "TRACER_ACL_GLM_KEY"
+        Set-HiddenApiKey "DeepSeek API key" "TRACER_V3_DEEPSEEK_KEY"
+        Set-HiddenApiKey "Zhipu BigModel GLM API key" "TRACER_V3_GLM_KEY"
 
         & python src/causal_feedback.py preflight `
-            --config experiments/causal_feedback.tracer_acl2027_extended_v3.json
+            --config experiments/causal_feedback.tracer_extended_v3.json
         if ($LASTEXITCODE -ne 0) {
             throw "DeepSeek/GLM synthetic preflight failed; no TRACER-REAL task was sent."
         }
     }
 
     if ($Provider -in @("All", "MiniMax")) {
-        Set-HiddenApiKey "MiniMax API key" "TRACER_ACL_MINIMAX_KEY"
+        Set-HiddenApiKey "MiniMax API key" "TRACER_V3_MINIMAX_KEY"
 
         & python src/causal_feedback.py preflight `
-            --config experiments/causal_feedback.tracer_acl2027_minimax_confirmatory_v3.json
+            --config experiments/causal_feedback.tracer_minimax_confirmatory_v3.json
         if ($LASTEXITCODE -ne 0) {
             throw "MiniMax synthetic preflight failed; no TRACER-REAL task was sent."
         }
@@ -61,7 +61,7 @@ try {
     Write-Host "$Provider first-party provider preflight passed. No TRACER-REAL task was sent."
 }
 finally {
-    Remove-Item Env:TRACER_ACL_DEEPSEEK_KEY -ErrorAction SilentlyContinue
-    Remove-Item Env:TRACER_ACL_GLM_KEY -ErrorAction SilentlyContinue
-    Remove-Item Env:TRACER_ACL_MINIMAX_KEY -ErrorAction SilentlyContinue
+    Remove-Item Env:TRACER_V3_DEEPSEEK_KEY -ErrorAction SilentlyContinue
+    Remove-Item Env:TRACER_V3_GLM_KEY -ErrorAction SilentlyContinue
+    Remove-Item Env:TRACER_V3_MINIMAX_KEY -ErrorAction SilentlyContinue
 }

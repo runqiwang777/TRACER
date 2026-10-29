@@ -4,6 +4,8 @@
 
 ### Typed Repair Agent with Compiler-validated Example Retrieval
 
+![TRACER 项目概览](https://runqiwang777.github.io/contents/images/tracer.jpg)
+
 TRACER 是 Lean 4 证明修复与失败复现工具。它将模型生成候选接入真实 Lean 编译、结构化编译反馈、检索、有界重试和可审计证明工件；项目不训练或微调模型。
 
 [![CI](https://github.com/runqiwang777/TRACER/actions/workflows/ci.yml/badge.svg)](https://github.com/runqiwang777/TRACER/actions/workflows/ci.yml)

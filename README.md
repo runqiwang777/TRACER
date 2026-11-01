@@ -1,6 +1,6 @@
 # TRACER
 
-**English** | [简体中文](README.zh-CN.md)
+**English** | [简体中文](README.zh-CN.md) | [Project website](https://runqiwang777.github.io/TRACER/)
 
 ### Typed Repair Agent with Compiler-validated Example Retrieval
 
@@ -11,6 +11,9 @@ TRACER is a Lean 4 proof-repair and failure-reproduction toolkit. It connects mo
 [![CI](https://github.com/runqiwang777/TRACER/actions/workflows/ci.yml/badge.svg)](https://github.com/runqiwang777/TRACER/actions/workflows/ci.yml)
 [![Lean](https://img.shields.io/badge/Lean-4.32.0-blue)](lean-toolchain)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+
+> [!IMPORTANT]
+> **[Explore the TRACER website and 24-case demo](https://runqiwang777.github.io/TRACER/)**. The static explorer shows stored Lean failures and repairs without an API key. The full prior repair24 release remains in the local archive; this repository includes the embedded 24-case replay.
 
 ## Current deliverables
 

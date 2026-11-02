@@ -1,6 +1,6 @@
 # Lean 编译反馈与 SP-n 后续工作方案
 
-> **状态：repair24 正式六臂批次、DeepSeek Pro/Flash 反馈表示研究与 SP v2 均已脱敏发布（2026-09-21）；SP 隔离协议已于 2026-09-24 发布首份 Linux 实测。** 六臂发布包覆盖 864 个任务、1,066 条有效轮次和 811 个独立复编译成功证明；预注册主比较 R-B−R-A 在 Flash 为 0.0 个百分点、在 Pro 为 −2.8 个百分点。结果只支持同一供应商模型族、24 道独立题上的描述性结论，不能证明普适或因果增益。SP 的 Linux 报告观察到 14/14 项冻结控制，但 Windows Docker Desktop 尚待完成，因此不构成双平台沙箱证据。
+> **当前主线（2026-11-02）：** 完成现有 v3 三供应商、真实项目因果反馈批次，再按冻结规则审计与分析。研究定位和后续顺序见 [RESEARCH_POSITIONING.md](RESEARCH_POSITIONING.md)。下文 F/S 分阶段记录包含历史工作；旧研究原始工件不随当前仓库发布，其说明不能作为当前 v3 结果。SP 已有 Linux 单平台证据，Windows Docker Desktop 仍待验证。
 
 Community feedback from [subfish-zhou](https://github.com/subfish-zhou) and [Fulcrum-Nebula](https://github.com/Fulcrum-Nebula) motivates two next-stage tracks: measuring how models use Lean diagnostics, and expanding SP-1 into a versioned SP-n security program. The plan below freezes evidence boundaries before implementation.
 
@@ -181,4 +181,4 @@ SP 是安全策略编号，不是 R-A～R-F 之外的新增实验臂。新增编
 4. **已完成第二版：** 冻结 SP 威胁模型、12 个危险案例和 8 个可真实编译的正常对照，并同时报告检测器一致性和带 Wilson 区间的双向错误率。
 5. **原型与 Linux 首次运行已完成：** Windows 与 Linux 共用的 Docker 低权限探针、14 项冻结控制与手动工作流已实现；Linux 14/14 实测已脱敏发布，仍需 Windows Docker Desktop 报告。单平台结果不宣称完整沙箱。
 
-下一阶段按以下顺序推进：严格按已冻结的 TRACER-REAL v2 对象开展项目级确认实验，再进行独立供应商复现；SP 线补齐 Windows Docker Desktop 报告并与已发布 Linux 报告逐字段比较。三条线使用独立工件和门禁，任一计划或中间状态都不得写成已完成结果。
+下一阶段优先完成现有 v3 批次并核对合格种子与分支完整性，再做全部成功证明复编译、AI 辅助复核、脱敏发布和冻结主分析；按模型和项目报告结果后，再讨论诊断表示、错误异质性及成本。SP 的 Windows 扩展与学习式路由保留为独立后续协议。具体顺序与证据边界见 [研究重点说明](RESEARCH_POSITIONING.md)。

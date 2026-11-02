@@ -6,7 +6,7 @@
 
 ![TRACER project overview](https://github.com/runqiwang777/TRACER/blob/main/TRACER.png)
 
-TRACER is a Lean 4 proof-repair and failure-reproduction toolkit. It connects model-generated candidates to real Lean compilation, structured compiler feedback, retrieval, bounded retries, and auditable proof artifacts. It does not train or fine-tune models.
+TRACER studies **when compiler feedback helps language models repair Lean 4 proofs in real projects**. Its preregistered v3 study covers **DeepSeek-v4-Pro, GLM-4.5, and MiniMax-M3** through three first-party providers. The toolkit connects candidate proofs to real Lean compilation, source-linked diagnostics, retrieval, bounded retries, and auditable proof artifacts. It does not train or fine-tune models.
 
 [![CI](https://github.com/runqiwang777/TRACER/actions/workflows/ci.yml/badge.svg)](https://github.com/runqiwang777/TRACER/actions/workflows/ci.yml)
 [![Lean](https://img.shields.io/badge/Lean-4.32.0-blue)](lean-toolchain)
@@ -44,11 +44,23 @@ python -m leancapsule replay capsules/std/unknown-identifier
 
 For a real model request, configure a supported provider as described in [API_GUIDE.md](docs/API_GUIDE.md). Requests may incur charges; never put credentials in source files, command history, or result artifacts.
 
-## Research design
+## Research focus
 
-v3 uses three confirmatory conditions and five additional extension conditions. SP-1–SP-12 are separate security policies, not experiment arms. See the [frozen experiment protocol](docs/V3_EXPERIMENT_PROTOCOL.md) and [security policy](docs/security_policy.md).
+The goal is to identify **which diagnostic information helps, for which errors and projects, and whether the effect holds across model families**. The frozen TRACER-REAL v2 test set contains 254 historical repairs from five independent upstream projects. Within each model, task, and repeat, v3 branches from the same failed first candidate so that another generation attempt can be distinguished from the information supplied by feedback.
 
-The frozen TRACER-REAL v2 test set contains 254 repairs from five independent upstream projects. The v3 protocol freezes a nested design for DeepSeek and GLM across eight arms and MiniMax across three confirmatory arms. This repository currently makes no performance or causal claim from the provider batch.
+| Frozen model | Provider | v3 scope |
+| --- | --- | --- |
+| `deepseek-v4-pro` | DeepSeek | Eight arms, three repeats |
+| `glm-4.5` | Zhipu BigModel | Eight arms, three repeats |
+| `MiniMax-M3` | MiniMax China | Three confirmatory arms, three repeats |
+
+All three models share the confirmatory contrast `true_structured - content_free_retry` and the `counterfactual` control. DeepSeek and GLM additionally compare raw and normalized diagnostics, matched irrelevant feedback, retrieval-only, and adaptive routing. Structured signals retain links to their original diagnostic evidence.
+
+This model coverage extends the study beyond a single provider or specialized prover. Combined with real-project repairs and diagnostic-representation controls, it supports a distinct investigation of feedback's external validity. Model-specific eligible failures are analyzed separately; model choice alone does not establish an improvement.
+
+[Li and Li (2026)](https://arxiv.org/abs/2610.22698) is an important reference for TRACER's feedback controls; see [related work](docs/RELATED_WORK.md) for context.
+
+**Evidence status:** the frozen protocol is available; this repository does not yet contain the fully audited final v3 provider release. Equal generation counts and output caps do not imply equal actual token expenditure. See the [experiment protocol](docs/V3_EXPERIMENT_PROTOCOL.md) and [research priorities](docs/RESEARCH_POSITIONING.md) for analysis and release gates. SP-1–SP-12 remain separate security policies.
 
 ## Validation
 
@@ -73,6 +85,7 @@ Capsule verification needs the pinned project dependencies. Offline tests and au
 - [v3 release naming and existing runs](docs/RELEASE_NAMING.md)
 - [LeanCapsule format](docs/CAPSULE_FORMAT.md) · [failure gallery](capsules/index.md)
 - [SP security policy](docs/security_policy.md) · [isolation protocol](docs/SP_ISOLATION_V1.md)
+- [Research priorities and contribution scope](docs/RESEARCH_POSITIONING.md)
 - [Related work](docs/RELATED_WORK.md) · [Progress register](PROGRESS.md)
 
 ## Citation and license

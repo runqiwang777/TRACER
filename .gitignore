@@ -26,3 +26,8 @@ results/work/
 historical/fate_m/baseline/.baseline_cache.json
 historical/fate_m/baseline/runs/
 historical/fate_m/results/work/
+
+# 开题报告、演讲稿和制作源文件仅保存在本机。
+/reports/proposal-*/
+/reports/TRACER_开题*
+/docs/proposal/

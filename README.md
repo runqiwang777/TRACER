@@ -15,6 +15,8 @@ TRACER studies **when compiler feedback helps language models repair Lean 4 proo
 > [!IMPORTANT]
 > **[Explore the TRACER website and 24-case demo](https://runqiwang777.github.io/TRACER/)**. The static explorer shows stored Lean failures and repairs without an API key. The full prior repair24 release remains in the local archive; this repository includes the embedded 24-case replay.
 
+[Research proposal (PDF)](docs/proposal/TRACER_Proposal.pdf) · [5-minute talk (PPTX)](docs/proposal/TRACER_5min_Talk.pptx) · [Speaker notes](docs/proposal/TALK.zh-CN.md)
+
 ## Current deliverables
 
 - **Repair and causal-study infrastructure:** frozen TRACER-REAL v2 benchmark enrollment and v3 preregistered protocol. This upload does not include an audited final provider result package; local run status is not inferred from the repository contents.
@@ -46,7 +48,14 @@ For a real model request, configure a supported provider as described in [API_GU
 
 ## Research focus
 
-The goal is to identify **which diagnostic information helps, for which errors and projects, and whether the effect holds across model families**. The frozen TRACER-REAL v2 test set contains 254 historical repairs from five independent upstream projects. Within each model, task, and repeat, v3 branches from the same failed first candidate so that another generation attempt can be distinguished from the information supplied by feedback.
+TRACER studies the information in diagnostics, observable repair behavior, and the cost of using feedback. Four questions organize the work:
+
+- **RQ1 — Effect:** does correct feedback improve repair over another generation attempt from the same failure?
+- **RQ2 — Semantics:** do true, irrelevant, and counterfactual diagnostics lead to different edits and outcomes?
+- **RQ3 — Representation:** what do raw, normalized, and structured diagnostics preserve, and at what cost?
+- **RQ4 — Error state:** when does feedback help, and can feedback selection be validated on independent data?
+
+The frozen TRACER-REAL v2 test set contains 254 historical repairs from five upstream projects. Within each model, task, and repeat, v3 branches from the same eligible failed first candidate.
 
 | Frozen model | Provider | v3 scope |
 | --- | --- | --- |
@@ -54,13 +63,13 @@ The goal is to identify **which diagnostic information helps, for which errors a
 | `glm-4.5` | Zhipu BigModel | Eight arms, three repeats |
 | `MiniMax-M3` | MiniMax China | Three confirmatory arms, three repeats |
 
-All three models share the confirmatory contrast `true_structured - content_free_retry` and the `counterfactual` control. DeepSeek and GLM additionally compare raw and normalized diagnostics, matched irrelevant feedback, retrieval-only, and adaptive routing. Structured signals retain links to their original diagnostic evidence.
+All models share `true_structured - content_free_retry` and the `counterfactual` control. DeepSeek and GLM also compare raw and normalized diagnostics, matched irrelevant feedback, retrieval-only, and the frozen adaptive prototype. Three providers extend the scope of validation; model choice alone does not establish a method or performance advantage.
 
-This model coverage extends the study beyond a single provider or specialized prover. Combined with real-project repairs and diagnostic-representation controls, it supports a distinct investigation of feedback's external validity. Model-specific eligible failures are analyzed separately; model choice alone does not establish an improvement.
+**Roadmap R1:** finish and audit the frozen v3 batch (**E1**), analyze existing diagnostic fidelity, edits, error transitions, and cost (**E2**), then independently preregister targeted semantic interventions (**E3**). New error-aware routing rules require independent validation (**E4**). These follow-ups do not change the running v3 protocol.
 
-[Li and Li (2026)](https://arxiv.org/abs/2610.22698) is an important reference for TRACER's feedback controls; see [related work](docs/RELATED_WORK.md) for context.
+[Li and Li (2026)](https://arxiv.org/abs/2610.22698) is an important reference for the feedback controls. TRACER's proposed increment combines real historical repairs with diagnostic information structure and verifiable behavioral evidence; see [related work](docs/RELATED_WORK.md).
 
-**Evidence status:** the frozen protocol is available; this repository does not yet contain the fully audited final v3 provider release. Equal generation counts and output caps do not imply equal actual token expenditure. See the [experiment protocol](docs/V3_EXPERIMENT_PROTOCOL.md) and [research priorities](docs/RESEARCH_POSITIONING.md) for analysis and release gates. SP-1–SP-12 remain separate security policies.
+**Evidence status:** this repository does not yet contain the fully audited final v3 provider release. Equal generation counts and output caps do not imply equal actual token expenditure. See the [frozen protocol](docs/V3_EXPERIMENT_PROTOCOL.md) and [R1 research priorities](docs/RESEARCH_POSITIONING.md). SP-1–SP-12 remain separate security policies.
 
 ## Validation
 

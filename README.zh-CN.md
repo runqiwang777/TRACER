@@ -15,6 +15,8 @@ TRACER 研究**编译反馈在什么条件下能帮助语言模型修复真实�
 > [!IMPORTANT]
 > **[打开 TRACER 网站与 24 案例演示](https://runqiwang777.github.io/TRACER/)**。静态网页展示已保存的 Lean 失败与修复，无需 API key。完整的旧 repair24 发布包目前留在本机归档；本仓库包含 24 案例网页回放。
 
+[开题报告（PDF）](docs/proposal/TRACER_Proposal.pdf) · [5 分钟汇报（PPTX）](docs/proposal/TRACER_5min_Talk.pptx) · [逐页讲稿](docs/proposal/TALK.zh-CN.md)
+
 ## 当前交付内容
 
 - **修复与因果实验基础设施：** 已冻结 TRACER-REAL v2 基准纳入方案和 v3 预注册协议。本次上传未包含完成审计的 provider 最终结果包；不能根据仓库缺少结果文件推断本地运行是否完成。
@@ -46,7 +48,14 @@ python -m leancapsule replay capsules/std/unknown-identifier
 
 ## 研究重点
 
-我们关心的是：**哪些诊断信息有效、在哪些错误和项目上有效，以及效果能否跨模型家族成立。** 冻结的 TRACER-REAL v2 测试集包含五个独立上游项目的 254 道历史修复题。v3 在同模型、同题、同重复内固定首轮失败候选再分叉，用来区分再次生成的机会与反馈提供的信息。
+TRACER 研究诊断中的信息、可观察的修复行为，以及使用反馈的成本。主线保留四个问题：
+
+- **RQ1：是否有效？** 同一失败起点上，正确反馈能否优于再生成一次？
+- **RQ2：语义是否重要？** 真实、无关和反事实诊断会引起怎样的修改与结果？
+- **RQ3：哪种表示有用？** 原始、规范化和结构化诊断保留什么信息，成本如何？
+- **RQ4：何时、如何起作用？** 效果依赖什么错误状态，反馈选择能否在独立数据上验证？
+
+冻结的 TRACER-REAL v2 测试集包含五个上游项目的 254 道历史修复题。v3 在同模型、同题、同重复内固定合格首轮失败候选再分叉。
 
 | 冻结模型 | 供应商 | v3 实验范围 |
 | --- | --- | --- |
@@ -54,13 +63,13 @@ python -m leancapsule replay capsules/std/unknown-identifier
 | `glm-4.5` | 智谱 BigModel | 八臂、三次重复 |
 | `MiniMax-M3` | MiniMax 中国区 | 三条确认臂、三次重复 |
 
-三模型共同运行确认性主对比 `true_structured - content_free_retry` 及 `counterfactual` 负对照。DeepSeek 与 GLM 还比较原始和规范化诊断、同类无关反馈、只检索及自适应路由。结构化信号始终保留对应的原始诊断证据。
+三模型共同运行 `true_structured - content_free_retry` 主对比及 `counterfactual` 负对照。DeepSeek 与 GLM 还比较原始和规范化诊断、同类无关反馈、只检索及冻结的 adaptive 原型。三个供应商扩展验证范围；模型不同本身不等于方法或性能优势已经成立。
 
-这些模型配置将检验范围扩展到多个供应商与模型家族，结合真实项目修复和反馈表示对照，形成 TRACER 对反馈外部有效性的独立研究。各模型的合格失败集合分别分析；不同模型本身不等于已经证明性能提升。
+**R1 路线：** 完成并审计当前冻结 v3（**E1**），分析现有诊断的忠实性、修改、错误转移及成本（**E2**），再独立预注册字段级定向语义干预（**E3**）。新错误感知路由规则需独立验证（**E4**）；这些后续工作不改变正在进行的 v3 协议。
 
-[Li 与 Li（2026）](https://arxiv.org/abs/2610.22698) 是 TRACER 反馈对照设计的重要参考，具体背景见[相关工作](docs/RELATED_WORK.md)。
+[Li 与 Li（2026）](https://arxiv.org/abs/2610.22698) 是反馈对照设计的重要参考。TRACER 拟形成的增量结合真实历史修复、诊断信息结构与可验证行为证据，具体背景见[相关工作](docs/RELATED_WORK.md)。
 
-**证据状态：** 冻结协议已经公开，本仓库尚未包含经过全量审计的 v3 provider 最终发布包。生成次数与输出上限相同，不代表实际 token 消耗相同。分析与发布门禁见[实验协议](docs/V3_EXPERIMENT_PROTOCOL.md)和[研究重点说明](docs/RESEARCH_POSITIONING.md)。SP-1～SP-12 仍是独立安全策略。
+**证据状态：** 本仓库尚未包含经过全量审计的 v3 provider 最终发布包。生成次数与输出上限相同，不代表实际 token 消耗相同。参见[冻结协议](docs/V3_EXPERIMENT_PROTOCOL.md)和[R1 研究重点](docs/RESEARCH_POSITIONING.md)。SP-1～SP-12 仍是独立安全策略。
 
 ## 验证
 

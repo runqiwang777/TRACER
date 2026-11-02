@@ -1,6 +1,6 @@
 # Lean 编译反馈与 SP-n 后续工作方案
 
-> **当前主线（2026-11-02）：** 完成现有 v3 三供应商、真实项目因果反馈批次，再按冻结规则审计与分析。研究定位和后续顺序见 [RESEARCH_POSITIONING.md](RESEARCH_POSITIONING.md)。下文 F/S 分阶段记录包含历史工作；旧研究原始工件不随当前仓库发布，其说明不能作为当前 v3 结果。SP 已有 Linux 单平台证据，Windows Docker Desktop 仍待验证。
+> **R1 主线（2026-11-02）：** E1 完成并审计现有冻结 v3；E2 复用轨迹分析诊断忠实性、语义响应、错误状态和成本；E3 字段级定向语义干预另立协议；E4 新路由规则独立验证。现有模型、干预和输出不改写。具体科学问题与证据边界见 [RESEARCH_POSITIONING.md](RESEARCH_POSITIONING.md)。下文 F/S 记录保留历史背景，不能作为已完成的 v3 或新 E3／E4 结果。
 
 Community feedback from [subfish-zhou](https://github.com/subfish-zhou) and [Fulcrum-Nebula](https://github.com/Fulcrum-Nebula) motivates two next-stage tracks: measuring how models use Lean diagnostics, and expanding SP-1 into a versioned SP-n security program. The plan below freezes evidence boundaries before implementation.
 

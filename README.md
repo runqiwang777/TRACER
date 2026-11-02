@@ -1,102 +1,112 @@
 # TRACER
 
-**English** | [简体中文](README.zh-CN.md) | [Project website](https://runqiwang777.github.io/TRACER/)
+**English** | [简体中文](README.zh-CN.md) | [日本語](README.ja.md) | [한국어](README.ko.md)
 
-### Typed Repair Agent with Compiler-validated Example Retrieval
+**Repair AI-written mathematical proofs. Check every result with Lean.**
 
-![TRACER project overview](https://github.com/runqiwang777/TRACER/blob/main/TRACER.png)
+[Website](https://runqiwang777.github.io/TRACER/) · [Demo](https://runqiwang777.github.io/TRACER/demo/) · [API guide](docs/API_GUIDE.md)
 
-TRACER studies **when compiler feedback helps language models repair Lean 4 proofs in real projects**. Its preregistered v3 study covers **DeepSeek-v4-Pro, GLM-4.5, and MiniMax-M3** through three first-party providers. The toolkit connects candidate proofs to real Lean compilation, source-linked diagnostics, retrieval, bounded retries, and auditable proof artifacts. It does not train or fine-tune models.
+![CI](https://github.com/runqiwang777/TRACER/actions/workflows/ci.yml/badge.svg) [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-[![CI](https://github.com/runqiwang777/TRACER/actions/workflows/ci.yml/badge.svg)](https://github.com/runqiwang777/TRACER/actions/workflows/ci.yml)
-[![Lean](https://img.shields.io/badge/Lean-4.32.0-blue)](lean-toolchain)
-[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+TRACER connects a language model to Lean, a tool that checks mathematical proofs. It sends useful error information back to the model, can retrieve related examples, and checks the revised proof again.
 
-> [!IMPORTANT]
-> **[Explore the TRACER website and 24-case demo](https://runqiwang777.github.io/TRACER/)**. The static explorer shows stored Lean failures and repairs without an API key. The full prior repair24 release remains in the local archive; this repository includes the embedded 24-case replay.
+New to Lean? A proof is a sequence of justified mathematical steps. Lean checks those steps against a stated theorem and its assumptions. Fluent text alone is not enough to pass.
 
-[Research proposal (PDF)](docs/proposal/TRACER_Proposal.pdf) · [5-minute talk (PPTX)](docs/proposal/TRACER_5min_Talk.pptx) · [Speaker notes](docs/proposal/TALK.zh-CN.md)
+## Try TRACER
 
-## Current deliverables
+### [Explore 24 saved repairs](https://runqiwang777.github.io/TRACER/demo/)
 
-- **Repair and causal-study infrastructure:** frozen TRACER-REAL v2 benchmark enrollment and v3 preregistered protocol. This upload does not include an audited final provider result package; local run status is not inferred from the repository contents.
-- **Compiler feedback:** raw, normalized, and structured diagnostic layers with retained source evidence and offline failure fixtures.
-- **LeanCapsule:** 24 replayable failures across Std, Mathlib, and project-local environments.
-- **Security:** SP-1–SP-12 pre-compilation policy cases with 8 benign controls; one Linux container run observed 14/14 declared controls. Windows Docker Desktop remains pending.
+No installation or API key. The demo replays saved examples, not live model calls.
 
-Published security artifacts: [SP v2 offline policy results](published/security-study-tracer-sp-v2/) · [Linux isolation report](published/security-isolation-tracer-sp-v1/).
+![TRACER repair workflow](site/overview.svg)
 
-## Quick start
+## A missing step, made visible
 
-Requirements: Python 3.11+, Git, and Lean via `elan`. The repository pins Lean in [lean-toolchain](lean-toolchain).
+Suppose x = y and y = z. We want to prove x = z. Using only the first equality leaves a gap.
+
+```lean
+-- x = y, y = z; goal: x = z
+-- rejected
+by exact hxy
+-- accepted
+by exact hxy.trans hyz
+```
+
+Lean identifies the mismatch. TRACER preserves the exact evidence and sends the relevant information back. The revised proof uses both equalities. Lean accepts this example. Small teaching example. The 24-case demo contains saved experimental failures and repairs.
+
+## What TRACER does
+
+| | |
+| --- | --- |
+| **Check the candidate** | Compile a proposed proof while keeping the theorem and imports fixed. |
+| **Explain the failure** | Keep the original message and extract identifiers, types and unfinished goals with their source snippets. |
+| **Try a repair** | Give the model feedback and, when enabled, related local examples. Stop at a fixed attempt limit. |
+| **Save the evidence** | Save the candidate, diagnostic, usage and accepted proof for independent rechecking. |
+
+## What the completed study shows
+
+24 distinct problems, two model configurations and repeated settings produced 864 task instances. Repeated instances are not 864 different theorems.
+
+| | Lean success |
+| --- | ---: |
+| First attempt | 735/864 (85.1%) |
+| Within three attempts | 811/864 (93.9%) |
+
+**76 additional task instances passed after the first attempt.** The increase from 85.1% to 93.9% includes extra attempts. It does not isolate the benefit of feedback.
+
+In the direct comparison with retrying without feedback, compiler feedback produced the same number of successes on Flash and two fewer on Pro, out of 72 instances per setting. We have not established a stable feedback advantage.
+
+Compiler checks establish formal validity in the chosen environment and assumptions. AI-assisted review is not a full human mathematical review. One Linux container report and offline policy tests do not establish a universal sandbox.
+
+The full earlier study is retained in the local archive; this repository exposes its 24-case replay. [Evidence and source notes](docs/INTRODUCTION_EVIDENCE.md).
+
+## The question behind the toolkit
+
+**Does an error message help because of what it says, or does the model simply benefit from trying again?**
+
+- **Comparable starting point.** Reuse the same failed proof, then change only the information supplied for the next attempt.
+- **Checkable information.** Trace each extracted error field to the original message. Check whether edits address that specific problem.
+- **Real maintenance tasks.** Evaluate historical proof repairs from independent projects, with reference solutions kept outside generation.
+
+**The hard part:** A proof can fail because of a missing name, a wrong type, an unfinished goal or a changed dependency. We must preserve the right context, avoid leaking answers, separate API failures from proof failures, and account for the actual cost of every attempt.
+
+## Built, under study, and planned
+
+| | |
+| --- | --- |
+| **Built** | Bounded proof repair, source-linked diagnostics, example retrieval, saved proofs, 24 replayable failure cases, and a frozen test set of 254 historical repairs from five projects. |
+| **Under study** | A controlled comparison using DeepSeek, GLM and MiniMax. Complete trace auditing and independent recompilation must precede final results. This page is not a live run monitor. |
+| **Planned** | Change one diagnostic fact at a time to test editing behavior. Then test whether choosing feedback by error type helps on independent data. |
+
+## Run a small example locally
+
+After installing Python 3.11+ and the Lean toolchain pinned by this repository:
 
 ```bash
 git clone https://github.com/runqiwang777/TRACER.git
 cd TRACER
 python -m pip install -r requirements.txt
 lake build
-python -m leancapsule audit capsules
+python src/agent.py solve --file docs/examples/equality_chain.lean --theorem equality_chain --provider mock --mock-candidate "by exact hxy.trans hyz"
 ```
 
-Replay a frozen failure (success means the expected failure was reproduced):
+This supplied candidate exercises compilation and saving without a model call. It does not measure model quality.
 
-```bash
-python -m leancapsule replay capsules/std/unknown-identifier
-```
-
-For a real model request, configure a supported provider as described in [API_GUIDE.md](docs/API_GUIDE.md). Requests may incur charges; never put credentials in source files, command history, or result artifacts.
-
-## Research focus
-
-TRACER studies the information in diagnostics, observable repair behavior, and the cost of using feedback. Four questions organize the work:
-
-- **RQ1 — Effect:** does correct feedback improve repair over another generation attempt from the same failure?
-- **RQ2 — Semantics:** do true, irrelevant, and counterfactual diagnostics lead to different edits and outcomes?
-- **RQ3 — Representation:** what do raw, normalized, and structured diagnostics preserve, and at what cost?
-- **RQ4 — Error state:** when does feedback help, and can feedback selection be validated on independent data?
-
-The frozen TRACER-REAL v2 test set contains 254 historical repairs from five upstream projects. Within each model, task, and repeat, v3 branches from the same eligible failed first candidate.
-
-| Frozen model | Provider | v3 scope |
-| --- | --- | --- |
-| `deepseek-v4-pro` | DeepSeek | Eight arms, three repeats |
-| `glm-4.5` | Zhipu BigModel | Eight arms, three repeats |
-| `MiniMax-M3` | MiniMax China | Three confirmatory arms, three repeats |
-
-All models share `true_structured - content_free_retry` and the `counterfactual` control. DeepSeek and GLM also compare raw and normalized diagnostics, matched irrelevant feedback, retrieval-only, and the frozen adaptive prototype. Three providers extend the scope of validation; model choice alone does not establish a method or performance advantage.
-
-**Roadmap R1:** finish and audit the frozen v3 batch (**E1**), analyze existing diagnostic fidelity, edits, error transitions, and cost (**E2**), then independently preregister targeted semantic interventions (**E3**). New error-aware routing rules require independent validation (**E4**). These follow-ups do not change the running v3 protocol.
-
-[Li and Li (2026)](https://arxiv.org/abs/2610.22698) is an important reference for the feedback controls. TRACER's proposed increment combines real historical repairs with diagnostic information structure and verifiable behavioral evidence; see [related work](docs/RELATED_WORK.md).
-
-**Evidence status:** this repository does not yet contain the fully audited final v3 provider release. Equal generation counts and output caps do not imply equal actual token expenditure. See the [frozen protocol](docs/V3_EXPERIMENT_PROTOCOL.md) and [R1 research priorities](docs/RESEARCH_POSITIONING.md). SP-1–SP-12 remain separate security policies.
-
-## Validation
-
-```bash
-python -m unittest discover -s tests -v
-lake build
-python scripts/verify_compiler_feedback_v1.py --verify-only
-python src/tracer_real_v2.py audit
-python src/security_study.py --check published/security-study-tracer-sp-v2/report.json
-python scripts/audit_security_isolation_release.py published/security-isolation-tracer-sp-v1
-python -m leancapsule audit capsules
-python -m leancapsule verify capsules
-```
-
-Capsule verification needs the pinned project dependencies. Offline tests and audits do not call paid model APIs. Passing software checks does not establish a research hypothesis or prove a complete sandbox.
+For real model generation, see the API guide. You enter the key in a hidden terminal prompt. Paid requests can send source code and diagnostics to your provider.
 
 ## Documentation
 
-- [Provider/API setup](docs/API_GUIDE.md)
-- [Compiler feedback protocol](docs/COMPILER_FEEDBACK_V1.md) · [feedback adoption analysis](docs/FEEDBACK_ADOPTION_V1.md)
-- [TRACER-REAL v2 benchmark](docs/TRACER_REAL_V2.md) · [v3 experiment](docs/V3_EXPERIMENT_PROTOCOL.md)
-- [v3 release naming and existing runs](docs/RELEASE_NAMING.md)
-- [LeanCapsule format](docs/CAPSULE_FORMAT.md) · [failure gallery](capsules/index.md)
-- [SP security policy](docs/security_policy.md) · [isolation protocol](docs/SP_ISOLATION_V1.md)
-- [Research priorities and contribution scope](docs/RESEARCH_POSITIONING.md)
-- [Related work](docs/RELATED_WORK.md) · [Progress register](PROGRESS.md)
+- [API guide](docs/API_GUIDE.md)
+- [Proof repair and reproducible failure cases](docs/CAPSULE_FORMAT.md) · [Gallery](capsules/index.md)
+- [Read the method and evidence limits](docs/INTRODUCTION_EVIDENCE.md) · [Progress](PROGRESS.md)
+- [Controlled feedback study](docs/V3_EXPERIMENT_PROTOCOL.md) · [Execution safety](docs/security_policy.md)
+- [Offline safety evidence](published/security-study-tracer-sp-v2/) · [Linux isolation evidence](published/security-isolation-tracer-sp-v1/)
+- [Contributing](CONTRIBUTING.md) · [Research context](docs/RELATED_WORK.md)
 
-## Citation and license
+LeanDojo, Baldur and APOLLO inform the tooling and repair workflow. Li and Li is an important reference for feedback controls. TRACER focuses on real-project diagnostics, observable edits and the cost of using feedback.
 
-For research or teaching use, cite [CITATION.cff](CITATION.cff) and identify the exact version and experiment batch. The project is under the [MIT License](LICENSE); capsules retain their individual source licenses.
+## Citation and acknowledgments
+
+MIT license. Cite the software and the exact evidence batch. Thanks to SJTU AI4Math Summer School 2026 and the community reviewers. [CITATION.cff](CITATION.cff) · [MIT](LICENSE) · [SJTU AI4Math Summer School 2026](https://sjtu-ai4math.github.io/summer-school/2026/).
+
+<sub>Typed Repair Agent with Compiler-validated Example Retrieval</sub>

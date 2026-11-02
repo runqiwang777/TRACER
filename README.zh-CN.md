@@ -1,102 +1,112 @@
 # TRACER
 
-[English](README.md) | **简体中文** | [项目网站](https://runqiwang777.github.io/TRACER/)
+[English](README.md) | **简体中文** | [日本語](README.ja.md) | [한국어](README.ko.md)
 
-### Typed Repair Agent with Compiler-validated Example Retrieval
+**让 AI 写的数学证明出错后能修复，每次修改都交给 Lean 检查。**
 
-![TRACER 项目概览](https://github.com/runqiwang777/TRACER/blob/main/TRACER.png)
+[Website](https://runqiwang777.github.io/TRACER/zh.html) · [Demo](https://runqiwang777.github.io/TRACER/demo/) · [API 指南](docs/API_GUIDE.md)
 
-TRACER 研究**编译反馈在什么条件下能帮助语言模型修复真实项目中的 Lean 4 证明**。预注册的 v3 实验覆盖 **DeepSeek-v4-Pro、GLM-4.5 与 MiniMax-M3**，分别通过三家一方 API 调用。工具链连接候选证明、真实 Lean 编译、保留来源证据的诊断、检索、有界重试与可审计证明工件；项目不训练或微调模型。
+![CI](https://github.com/runqiwang777/TRACER/actions/workflows/ci.yml/badge.svg) [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-[![CI](https://github.com/runqiwang777/TRACER/actions/workflows/ci.yml/badge.svg)](https://github.com/runqiwang777/TRACER/actions/workflows/ci.yml)
-[![Lean](https://img.shields.io/badge/Lean-4.32.0-blue)](lean-toolchain)
-[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+TRACER 把语言模型和 Lean 连接起来。Lean 是检查数学证明的软件：它指出哪一步不成立，TRACER 把报错和相关例子交给模型，再检查修改后的证明。
 
-> [!IMPORTANT]
-> **[打开 TRACER 网站与 24 案例演示](https://runqiwang777.github.io/TRACER/)**。静态网页展示已保存的 Lean 失败与修复，无需 API key。完整的旧 repair24 发布包目前留在本机归档；本仓库包含 24 案例网页回放。
+没接触过 Lean？可以把它理解为数学证明的检查器。我们把命题和证明步骤写成代码，Lean 检查每一步是否符合给定定义和假设。看起来有道理，还不够通过检查。
 
-[开题报告（PDF）](docs/proposal/TRACER_Proposal.pdf) · [5 分钟汇报（PPTX）](docs/proposal/TRACER_5min_Talk.pptx) · [逐页讲稿](docs/proposal/TALK.zh-CN.md)
+## 体验 TRACER
 
-## 当前交付内容
+### [体验 24 个已保存的修复案例](https://runqiwang777.github.io/TRACER/demo/)
 
-- **修复与因果实验基础设施：** 已冻结 TRACER-REAL v2 基准纳入方案和 v3 预注册协议。本次上传未包含完成审计的 provider 最终结果包；不能根据仓库缺少结果文件推断本地运行是否完成。
-- **编译反馈：** 原始、规范化和结构化诊断层，保留来源证据，并提供离线失败夹具。
-- **LeanCapsule：** 24 个可回放失败案例，覆盖 Std、Mathlib 和 project-local 环境。
-- **安全：** SP-1～SP-12 编译前策略案例及 8 个正常对照；一次 Linux 容器运行观察到声明的 14/14 项控制。Windows Docker Desktop 尚待验证。
+无需安装、无需 API。演示读取已保存案例，不会现场调用模型。
 
-已发布安全工件：[SP v2 离线策略结果](published/security-study-tracer-sp-v2/) · [Linux 隔离报告](published/security-isolation-tracer-sp-v1/)。
+![TRACER repair workflow](site/overview.svg)
 
-## 快速开始
+## 一个没用上的条件，为什么会导致失败
 
-需要 Python 3.11+、Git 和通过 `elan` 安装的 Lean。仓库在 [lean-toolchain](lean-toolchain) 中固定 Lean 版本。
+已知 x = y、y = z，要证明 x = z。如果 AI 只使用第一个等式，证明就少了一步。
+
+```lean
+-- x = y, y = z; goal: x = z
+-- rejected
+by exact hxy
+-- accepted
+by exact hxy.trans hyz
+```
+
+Lean 指出实际得到的结论和目标不一致。TRACER 保留这段原文，把相关信息交给模型。 修改后的证明连接两个等式。这个示例可以通过 Lean 检查。 这是解释流程的教学示例。完整演示中另有 24 个来自实验的已保存失败与修复案例。
+
+## TRACER 已经能做什么
+
+| | |
+| --- | --- |
+| **检查 AI 的证明** | 在固定命题和依赖的情况下编译候选证明，找到真正的失败原因。 |
+| **保留并整理报错** | 保留原文，提取找不到的名称、类型差异和未完成目标，每个字段都能找到原始依据。 |
+| **让模型再修一次** | 提供反馈，并按设置检索相关本地例子。限制尝试次数，避免无限重试。 |
+| **保存可复查的结果** | 记录每次候选、报错和用量，保存通过的证明，供独立重新编译。 |
+
+## 已经完成的研究，得到了什么结果
+
+24 道不同题目，在两种模型配置和多种设置下重复运行，共形成 864 个任务实例。它们不是 864 道不同定理。
+
+| | Lean 通过数 |
+| --- | ---: |
+| 第一次尝试 | 735/864 (85.1%) |
+| 最多三次尝试 | 811/864 (93.9%) |
+
+**第一次未通过的任务中，另有 76 个任务实例后来通过。** 85.1% 到 93.9% 包含了多次尝试的收益，不能全部算作报错反馈的贡献。
+
+与“不提供报错、直接再试”的设置相比，加入反馈后 Flash 的成功数相同，Pro 少了 2 个；每种设置各 72 个任务实例。目前没有证明反馈能稳定提升成功率。
+
+Lean 通过表示证明在给定环境和假设下形式有效。AI 辅助复核不等于完整的人工数学审查。离线安全测试和一次 Linux 容器运行，也不构成通用沙箱保证。
+
+完整的前期实验包保留在本机归档；当前仓库提供其中 24 个案例的浏览器回放。 [数据与来源说明](docs/INTRODUCTION_EVIDENCE.md).
+
+## 我们真正想弄清的问题
+
+**AI 改对了，是因为看懂了错误提示，还是因为它又试了一次？**
+
+- **让比较从同一个错误出发.** 复制同一份失败证明，只改变下一次能看到的信息，减少起点不同带来的干扰。
+- **检查提示里的信息有没有被用上.** 整理报错时保留原始依据，再检查模型是否修改了与错误相关的代码。
+- **研究真实项目里的维护问题.** 从不同项目的历史修复中构造测试题，把参考答案与模型生成过程隔离。
+
+**难在哪里:** 找不到名称、类型不对、目标没证完、依赖发生变化，都可能让证明失败。我们需要保留必要上下文、避免答案泄漏、区分 API 故障和证明错误，还要统计每次尝试真实消耗的时间与 token。
+
+## 已完成、正在做、准备做
+
+| | |
+| --- | --- |
+| **已完成** | 限次修复流程、可追溯报错、例子检索、成功证明保存、24 个可回放失败案例，以及来自 5 个项目的 254 道历史修复测试题。 |
+| **正在做** | 使用 DeepSeek、GLM、MiniMax 比较不同反馈的作用。收齐轨迹、审计并独立重新编译后再发布最终结果。这里不是实时运行监控。 |
+| **准备做** | 一次只改变错误提示中的一个事实，观察模型是否沿对应方向修改；再用独立材料检验按错误类型选择反馈是否有效。 |
+
+## 在本地体验一个小例子
+
+先安装 Python 3.11+ 和仓库指定的 Lean 工具链，然后运行：
 
 ```bash
 git clone https://github.com/runqiwang777/TRACER.git
 cd TRACER
 python -m pip install -r requirements.txt
 lake build
-python -m leancapsule audit capsules
+python src/agent.py solve --file docs/examples/equality_chain.lean --theorem equality_chain --provider mock --mock-candidate "by exact hxy.trans hyz"
 ```
 
-回放一个冻结失败案例（成功表示预期失败被复现）：
+这里提供固定候选，用来体验编译、验证和保存，不调用模型，也不衡量模型能力。
 
-```bash
-python -m leancapsule replay capsules/std/unknown-identifier
-```
+要让模型真正生成证明，请看 API 指南。密钥通过终端隐藏输入；付费调用会把必要源码和报错发送给你选定的服务商。
 
-真实模型请求的配置方法见 [API_GUIDE.md](docs/API_GUIDE.md)。请求可能产生费用；不要把凭据写入源码、命令历史或结果工件。
+## 进一步了解
 
-## 研究重点
+- [API 指南](docs/API_GUIDE.md)
+- [证明修复与失败回放](docs/CAPSULE_FORMAT.md) · [案例库](capsules/index.md)
+- [查看方法与证据边界](docs/INTRODUCTION_EVIDENCE.md) · [进度](PROGRESS.md)
+- [受控反馈比较](docs/V3_EXPERIMENT_PROTOCOL.md) · [执行安全](docs/security_policy.md)
+- [离线安全证据](published/security-study-tracer-sp-v2/) · [Linux 隔离证据](published/security-isolation-tracer-sp-v1/)
+- [参与贡献](CONTRIBUTING.md) · [相关研究](docs/RELATED_WORK.md)
 
-TRACER 研究诊断中的信息、可观察的修复行为，以及使用反馈的成本。主线保留四个问题：
+LeanDojo、Baldur 和 APOLLO 为交互、检索和修复流程提供参考；Li 与 Li 是反馈对照的重要参考。TRACER 进一步关注真实项目中的诊断信息、可核查修改和使用反馈的成本。
 
-- **RQ1：是否有效？** 同一失败起点上，正确反馈能否优于再生成一次？
-- **RQ2：语义是否重要？** 真实、无关和反事实诊断会引起怎样的修改与结果？
-- **RQ3：哪种表示有用？** 原始、规范化和结构化诊断保留什么信息，成本如何？
-- **RQ4：何时、如何起作用？** 效果依赖什么错误状态，反馈选择能否在独立数据上验证？
+## 引用与致谢
 
-冻结的 TRACER-REAL v2 测试集包含五个上游项目的 254 道历史修复题。v3 在同模型、同题、同重复内固定合格首轮失败候选再分叉。
+本项目采用 MIT 许可。引用时请注明软件版本和证据批次。感谢 SJTU AI4Math Summer School 2026 及参与点评的社区成员。 [CITATION.cff](CITATION.cff) · [MIT](LICENSE) · [SJTU AI4Math Summer School 2026](https://sjtu-ai4math.github.io/summer-school/2026/).
 
-| 冻结模型 | 供应商 | v3 实验范围 |
-| --- | --- | --- |
-| `deepseek-v4-pro` | DeepSeek | 八臂、三次重复 |
-| `glm-4.5` | 智谱 BigModel | 八臂、三次重复 |
-| `MiniMax-M3` | MiniMax 中国区 | 三条确认臂、三次重复 |
-
-三模型共同运行 `true_structured - content_free_retry` 主对比及 `counterfactual` 负对照。DeepSeek 与 GLM 还比较原始和规范化诊断、同类无关反馈、只检索及冻结的 adaptive 原型。三个供应商扩展验证范围；模型不同本身不等于方法或性能优势已经成立。
-
-**R1 路线：** 完成并审计当前冻结 v3（**E1**），分析现有诊断的忠实性、修改、错误转移及成本（**E2**），再独立预注册字段级定向语义干预（**E3**）。新错误感知路由规则需独立验证（**E4**）；这些后续工作不改变正在进行的 v3 协议。
-
-[Li 与 Li（2026）](https://arxiv.org/abs/2610.22698) 是反馈对照设计的重要参考。TRACER 拟形成的增量结合真实历史修复、诊断信息结构与可验证行为证据，具体背景见[相关工作](docs/RELATED_WORK.md)。
-
-**证据状态：** 本仓库尚未包含经过全量审计的 v3 provider 最终发布包。生成次数与输出上限相同，不代表实际 token 消耗相同。参见[冻结协议](docs/V3_EXPERIMENT_PROTOCOL.md)和[R1 研究重点](docs/RESEARCH_POSITIONING.md)。SP-1～SP-12 仍是独立安全策略。
-
-## 验证
-
-```bash
-python -m unittest discover -s tests -v
-lake build
-python scripts/verify_compiler_feedback_v1.py --verify-only
-python src/tracer_real_v2.py audit
-python src/security_study.py --check published/security-study-tracer-sp-v2/report.json
-python scripts/audit_security_isolation_release.py published/security-isolation-tracer-sp-v1
-python -m leancapsule audit capsules
-python -m leancapsule verify capsules
-```
-
-Capsule 全量验证需要准备固定项目依赖。离线测试和审计不会调用付费模型 API。软件检查通过不等于研究假设成立，也不能证明形成了完整沙箱。
-
-## 文档
-
-- [Provider/API 配置](docs/API_GUIDE.md)
-- [编译反馈协议](docs/COMPILER_FEEDBACK_V1.md) · [反馈采纳分析](docs/FEEDBACK_ADOPTION_V1.md)
-- [TRACER-REAL v2 题库](docs/TRACER_REAL_V2.md) · [v3 实验](docs/V3_EXPERIMENT_PROTOCOL.md)
-- [v3 公开命名与既有运行](docs/RELEASE_NAMING.md)
-- [LeanCapsule 格式](docs/CAPSULE_FORMAT.md) · [失败案例库](capsules/index.md)
-- [SP 安全策略](docs/security_policy.md) · [隔离协议](docs/SP_ISOLATION_V1.md)
-- [研究重点与贡献边界](docs/RESEARCH_POSITIONING.md)
-- [相关工作](docs/RELATED_WORK.md) · [进度登记](PROGRESS.md)
-
-## 引用与许可
-
-研究或教学使用时，请引用 [CITATION.cff](CITATION.cff)，并注明仓库版本和实验批次。项目采用 [MIT License](LICENSE)；各 Capsule 保留其来源许可。
+<sub>Typed Repair Agent with Compiler-validated Example Retrieval</sub>

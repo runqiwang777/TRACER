@@ -8,6 +8,8 @@
 
 ![CI](https://github.com/runqiwang777/TRACER/actions/workflows/ci.yml/badge.svg) [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
+![TRACER プロジェクト概要図](TRACER.png)
+
 TRACER は言語モデルと証明検証システム Lean をつなぎます。エラー情報や関連する例をモデルに渡し、修正した証明をもう一度検証します。
 
 Lean を初めて知る方へ：命題と証明の各ステップをコードで記述すると、Lean が定義と仮定に照らして正しさを検証します。もっともらしい文章だけでは合格できません。

@@ -8,6 +8,8 @@
 
 ![CI](https://github.com/runqiwang777/TRACER/actions/workflows/ci.yml/badge.svg) [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
+![TRACER 프로젝트 개요도](TRACER.png)
+
 TRACER는 언어 모델과 수학 증명 검사기 Lean을 연결합니다. 오류 정보와 관련 예제를 모델에 제공하고, 수정한 증명을 다시 검사합니다.
 
 Lean이 처음이라면: 명제와 증명 단계를 코드로 작성하면 Lean이 정의와 가정에 따라 각 단계를 검사합니다. 그럴듯한 설명만으로는 통과할 수 없습니다.

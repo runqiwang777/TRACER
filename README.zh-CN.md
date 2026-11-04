@@ -8,6 +8,8 @@
 
 ![CI](https://github.com/runqiwang777/TRACER/actions/workflows/ci.yml/badge.svg) [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
+![TRACER 项目总览图](TRACER.png)
+
 TRACER 把语言模型和 Lean 连接起来。Lean 是检查数学证明的软件：它指出哪一步不成立，TRACER 把报错和相关例子交给模型，再检查修改后的证明。
 
 没接触过 Lean？可以把它理解为数学证明的检查器。我们把命题和证明步骤写成代码，Lean 检查每一步是否符合给定定义和假设。看起来有道理，还不够通过检查。

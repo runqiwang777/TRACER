@@ -8,6 +8,8 @@
 
 ![CI](https://github.com/runqiwang777/TRACER/actions/workflows/ci.yml/badge.svg) [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
+![TRACER project overview](TRACER.png)
+
 TRACER connects a language model to Lean, a tool that checks mathematical proofs. It sends useful error information back to the model, can retrieve related examples, and checks the revised proof again.
 
 New to Lean? A proof is a sequence of justified mathematical steps. Lean checks those steps against a stated theorem and its assumptions. Fluent text alone is not enough to pass.

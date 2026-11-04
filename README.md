@@ -79,7 +79,7 @@ The completed six-condition pilot used 24 tasks, two model configurations and th
 
 The preregistered larger study uses eight feedback conditions for DeepSeek and GLM, and three confirmatory conditions for MiniMax, with three repeats per task. The eight conditions are: retry without feedback; the full compiler message; a normalized message; an accurate structured diagnosis; an unrelated diagnosis matched by error type; a diagnosis with one key fact changed; retrieved examples without compiler feedback; and adaptive feedback selection. MiniMax runs the retry, accurate structured diagnosis and counterfactual diagnosis conditions.
 
-The initial-generation plan contains 1,524 DeepSeek/GLM runs and 762 MiniMax runs. Only eligible first-round failures enter follow-up branches. The preregistered maximum is **16,764 provider generations**. This is a design ceiling, not a completed-result count; final results will report audited eligible and completed counts.
+The initial-generation plan contains 1,524 DeepSeek/GLM runs and 762 MiniMax runs. Only eligible first-round failures enter follow-up branches. The preregistered maximum is **16,764 provider calls**. This is a design ceiling, not a completed-result count; final results will report audited eligible and completed counts.
 
 ## The question behind the toolkit
 

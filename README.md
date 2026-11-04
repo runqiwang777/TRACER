@@ -62,6 +62,25 @@ Compiler checks establish formal validity in the chosen environment and assumpti
 
 The full earlier study is retained in the local archive; this repository exposes its 24-case replay. [Evidence and source notes](docs/INTRODUCTION_EVIDENCE.md).
 
+## Benchmark and experiment design
+
+The frozen benchmark contains **254 distinct historical repair tasks** from five independent projects:
+
+| Project | Tasks |
+| --- | ---: |
+| Equational Theories | 53 |
+| FLT | 47 |
+| LeanAPAP | 16 |
+| PFR | 44 |
+| PhysLean | 94 |
+| **Total** | **254** |
+
+The completed six-condition pilot used 24 tasks, two model configurations and three repeats: **24 × 2 × 3 × 6 = 864 runs**. These are repeated task instances, not 864 distinct problems.
+
+The preregistered larger study uses eight feedback conditions for DeepSeek and GLM, and three confirmatory conditions for MiniMax, with three repeats per task. The eight conditions are: retry without feedback; the full compiler message; a normalized message; an accurate structured diagnosis; an unrelated diagnosis matched by error type; a diagnosis with one key fact changed; retrieved examples without compiler feedback; and adaptive feedback selection. MiniMax runs the retry, accurate structured diagnosis and counterfactual diagnosis conditions.
+
+The initial-generation plan contains 1,524 DeepSeek/GLM runs and 762 MiniMax runs. Only eligible first-round failures enter follow-up branches. The preregistered maximum is **16,764 provider calls**. This is a design ceiling, not a completed-result count; final results will report audited eligible and completed counts.
+
 ## The question behind the toolkit
 
 **Does an error message help because of what it says, or does the model simply benefit from trying again?**

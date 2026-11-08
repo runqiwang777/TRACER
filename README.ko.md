@@ -126,6 +126,16 @@ python src/agent.py solve --file docs/examples/equality_chain.lean --theorem equ
 
 LeanDojo, Baldur, APOLLO는 상호작용과 검색, 수정 흐름의 참고 연구입니다. Li와 Li는 피드백 대조 실험의 중요한 참고 연구입니다. TRACER는 실제 프로젝트의 진단 정보, 검증 가능한 수정 행동, 피드백 사용 비용을 연구합니다.
 
+## 스타 수 추이
+
+<a href="https://www.star-history.com/?repos=runqiwang777%2Ftracer&type=date&legend=top-left">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=runqiwang777/tracer&type=date&theme=dark&legend=top-left" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=runqiwang777/tracer&type=date&legend=top-left" />
+    <img alt="TRACER 스타 수 추이 그래프" src="https://api.star-history.com/chart?repos=runqiwang777/tracer&type=date&legend=top-left" />
+  </picture>
+</a>
+
 ## 인용 및 감사
 
 MIT 라이선스입니다. 인용할 때 소프트웨어 버전과 근거 실험 배치를 명시해 주세요. SJTU AI4Math Summer School 2026과 커뮤니티 검토자께 감사드립니다. [CITATION.cff](CITATION.cff) · [MIT](LICENSE) · [SJTU AI4Math Summer School 2026](https://sjtu-ai4math.github.io/summer-school/2026/).

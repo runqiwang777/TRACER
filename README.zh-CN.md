@@ -126,6 +126,16 @@ python src/agent.py solve --file docs/examples/equality_chain.lean --theorem equ
 
 LeanDojo、Baldur 和 APOLLO 为交互、检索和修复流程提供参考；Li 与 Li 是反馈对照的重要参考。TRACER 进一步关注真实项目中的诊断信息、可核查修改和使用反馈的成本。
 
+## 星标趋势
+
+<a href="https://www.star-history.com/?repos=runqiwang777%2Ftracer&type=date&legend=top-left">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=runqiwang777/tracer&type=date&theme=dark&legend=top-left" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=runqiwang777/tracer&type=date&legend=top-left" />
+    <img alt="TRACER 星标趋势图" src="https://api.star-history.com/chart?repos=runqiwang777/tracer&type=date&legend=top-left" />
+  </picture>
+</a>
+
 ## 引用与致谢
 
 本项目采用 MIT 许可。引用时请注明软件版本和证据批次。感谢 SJTU AI4Math Summer School 2026 及参与点评的社区成员。 [CITATION.cff](CITATION.cff) · [MIT](LICENSE) · [SJTU AI4Math Summer School 2026](https://sjtu-ai4math.github.io/summer-school/2026/).

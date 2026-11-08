@@ -126,6 +126,16 @@ For real model generation, see the API guide. You enter the key in a hidden term
 
 LeanDojo, Baldur and APOLLO inform the tooling and repair workflow. Li and Li is an important reference for feedback controls. TRACER focuses on real-project diagnostics, observable edits and the cost of using feedback.
 
+## Star History
+
+<a href="https://www.star-history.com/?repos=runqiwang777%2Ftracer&type=date&legend=top-left">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=runqiwang777/tracer&type=date&theme=dark&legend=top-left" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=runqiwang777/tracer&type=date&legend=top-left" />
+    <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=runqiwang777/tracer&type=date&legend=top-left" />
+  </picture>
+</a>
+
 ## Citation and acknowledgments
 
 MIT license. Cite the software and the exact evidence batch. Thanks to SJTU AI4Math Summer School 2026 and the community reviewers. [CITATION.cff](CITATION.cff) · [MIT](LICENSE) · [SJTU AI4Math Summer School 2026](https://sjtu-ai4math.github.io/summer-school/2026/).

@@ -62,24 +62,7 @@ Compiler checks establish formal validity in the chosen environment and assumpti
 
 The full earlier study is retained in the local archive; this repository exposes its 24-case replay. [Evidence and source notes](docs/INTRODUCTION_EVIDENCE.md).
 
-## Benchmark and experiment design
-
-The frozen benchmark contains **254 distinct historical repair tasks** from five independent projects:
-
-| Project | Tasks |
-| --- | ---: |
-| Equational Theories | 53 |
-| FLT | 47 |
-| LeanAPAP | 16 |
-| PFR | 44 |
-| PhysLean | 94 |
-| **Total** | **254** |
-
 The completed six-condition pilot used 24 tasks, two model configurations and three repeats: **24 × 2 × 3 × 6 = 864 runs**. These are repeated task instances, not 864 distinct problems.
-
-The preregistered larger study uses eight feedback conditions for DeepSeek and GLM, and three confirmatory conditions for MiniMax, with three repeats per task. The eight conditions are: retry without feedback; the full compiler message; a normalized message; an accurate structured diagnosis; an unrelated diagnosis matched by error type; a diagnosis with one key fact changed; retrieved examples without compiler feedback; and adaptive feedback selection. MiniMax runs the retry, accurate structured diagnosis and counterfactual diagnosis conditions.
-
-The initial-generation plan contains 1,524 DeepSeek/GLM runs and 762 MiniMax runs. Only eligible first-round failures enter follow-up branches. The preregistered maximum is **16,764 provider calls**. This is a design ceiling, not a completed-result count; final results will report audited eligible and completed counts.
 
 ## The question behind the toolkit
 
@@ -87,17 +70,8 @@ The initial-generation plan contains 1,524 DeepSeek/GLM runs and 762 MiniMax run
 
 - **Comparable starting point.** Reuse the same failed proof, then change only the information supplied for the next attempt.
 - **Checkable information.** Trace each extracted error field to the original message. Check whether edits address that specific problem.
-- **Real maintenance tasks.** Evaluate historical proof repairs from independent projects, with reference solutions kept outside generation.
 
 **The hard part:** A proof can fail because of a missing name, a wrong type, an unfinished goal or a changed dependency. We must preserve the right context, avoid leaking answers, separate API failures from proof failures, and account for the actual cost of every attempt.
-
-## Built, under study, and planned
-
-| | |
-| --- | --- |
-| **Built** | Bounded proof repair, source-linked diagnostics, example retrieval, saved proofs, 24 replayable failure cases, and a frozen test set of 254 historical repairs from five projects. |
-| **Under study** | A controlled comparison using DeepSeek, GLM and MiniMax. Complete trace auditing and independent recompilation must precede final results. This page is not a live run monitor. |
-| **Planned** | Change one diagnostic fact at a time to test editing behavior. Then test whether choosing feedback by error type helps on independent data. |
 
 ## Run a small example locally
 
@@ -120,7 +94,7 @@ For real model generation, see the API guide. You enter the key in a hidden term
 - [API guide](docs/API_GUIDE.md)
 - [Proof repair and reproducible failure cases](docs/CAPSULE_FORMAT.md) · [Gallery](capsules/index.md)
 - [Read the method and evidence limits](docs/INTRODUCTION_EVIDENCE.md) · [Progress](PROGRESS.md)
-- [Controlled feedback study](docs/V3_EXPERIMENT_PROTOCOL.md) · [Execution safety](docs/security_policy.md)
+- [Controlled feedback study](docs/RESEARCH_PROTOCOL.md) · [Execution safety](docs/security_policy.md)
 - [Offline safety evidence](published/security-study-tracer-sp-v2/) · [Linux isolation evidence](published/security-isolation-tracer-sp-v1/)
 - [Contributing](CONTRIBUTING.md) · [Research context](docs/RELATED_WORK.md)
 

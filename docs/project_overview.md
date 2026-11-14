@@ -20,7 +20,6 @@ TRACER（Typed Repair Agent with Compiler-validated Example Retrieval）是 Lean
 ```text
 lake build
 python scripts/verify_compiler_feedback_v1.py --verify-only
-python src/tracer_real_v2.py audit
 python src/security_study.py --check published/security-study-tracer-sp-v2/report.json
 python scripts/audit_security_isolation_release.py published/security-isolation-tracer-sp-v1
 python scripts/run_ci_tests.py

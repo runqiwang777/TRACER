@@ -1,7 +1,5 @@
 # Lean 编译反馈与 SP-n 后续工作方案
 
-> **R1 主线（2026-11-02）：** E1 完成并审计现有冻结 v3；E2 复用轨迹分析诊断忠实性、语义响应、错误状态和成本；E3 字段级定向语义干预另立协议；E4 新路由规则独立验证。现有模型、干预和输出不改写。具体科学问题与证据边界见 [RESEARCH_POSITIONING.md](RESEARCH_POSITIONING.md)。下文 F/S 记录保留历史背景，不能作为已完成的 v3 或新 E3／E4 结果。
-
 Community feedback from [subfish-zhou](https://github.com/subfish-zhou) and [Fulcrum-Nebula](https://github.com/Fulcrum-Nebula) motivates two next-stage tracks: measuring how models use Lean diagnostics, and expanding SP-1 into a versioned SP-n security program. The plan below freezes evidence boundaries before implementation.
 
 ## 1. 总体原则
@@ -99,16 +97,6 @@ Community feedback from [subfish-zhou](https://github.com/subfish-zhou) and [Ful
 
 `scripts/compare_feedback_models.py` 已对齐 Pro/Flash 的 216 个任务，并报告首轮与最终结局一致率、各表示成功差和表示对比方向一致性。报告单列共同零差异，避免把“两个模型都未出现表示差”解释为处理增益复现。下一次独立供应商复现仍须披露 thinking/reasoning 接口、tokenizer、别名更新和服务端默认值等残余混杂。
 
-### F5：正式六臂结果后的确认性研究
-
-**当前进展：repair24 六臂矩阵已完成并发布，确认性外推尚未开始。** 当前结果没有显示 R-B 相对 R-A 的稳定正向差异；动态检索与失败 Capsule 的最高观测值也只出现在 Flash。后续不应通过重复运行同一批次追求更好数字，而应把以下三项作为新的、独立预注册：
-
-1. 在 TRACER-REAL v2 的项目级 test 划分上复验同首轮候选分叉，主要估计按项目等权。
-2. 使用独立供应商模型复现 R-A～R-F，避免把同一供应商的两个配置当成跨模型普适证据。
-3. 把错误状态、路由决策、检索 query 与 Top-k 变化纳入逐题分析，解释“何时有效”，而不只比较总体成功率。
-
-每个新批次使用新的预注册、输出目录和发布包；不得回写 repair24 六臂工件，也不得把重复和实验臂当成新的独立题目扩大样本量。
-
 ## 3. Track S：把 SP-1 扩展为 SP-n
 
 SP 是安全策略编号，不是 R-A～R-F 之外的新增实验臂。新增编号前必须先写清威胁、正常对照和预期拦截位置。
@@ -180,5 +168,3 @@ SP 是安全策略编号，不是 R-A～R-F 之外的新增实验臂。新增编
 3. **已完成模型族内复现：** 记录错误类别转移、候选相关修改、反馈缺失/转换状态、缓存复用和检索 query/Top-k 变化；Pro/Flash 脱敏发布与逐任务配对已完成，独立供应商仍待完成。
 4. **已完成第二版：** 冻结 SP 威胁模型、12 个危险案例和 8 个可真实编译的正常对照，并同时报告检测器一致性和带 Wilson 区间的双向错误率。
 5. **原型与 Linux 首次运行已完成：** Windows 与 Linux 共用的 Docker 低权限探针、14 项冻结控制与手动工作流已实现；Linux 14/14 实测已脱敏发布，仍需 Windows Docker Desktop 报告。单平台结果不宣称完整沙箱。
-
-下一阶段优先完成现有 v3 批次并核对合格种子与分支完整性，再做全部成功证明复编译、AI 辅助复核、脱敏发布和冻结主分析；按模型和项目报告结果后，再讨论诊断表示、错误异质性及成本。SP 的 Windows 扩展与学习式路由保留为独立后续协议。具体顺序与证据边界见 [研究重点说明](RESEARCH_POSITIONING.md)。

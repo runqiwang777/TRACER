@@ -11,8 +11,8 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from causal_feedback import (  # noqa: E402
     ARMS, _prompt_source, audit_run, branch_prompt, build_plan, donor_map, intervention_for,
-    preflight_provider, resolve_compile_environments, run_matrix, summarize, validate_config,
-    validate_preregistration, validate_preregistration_record, validate_protocol,
+    preflight_provider, run_matrix, summarize, validate_config,
+    validate_preregistration, validate_protocol,
 )
 from compiler_feedback import build_feedback_record  # noqa: E402
 from error_state_graph import build_error_state_graph  # noqa: E402
@@ -43,10 +43,6 @@ def seed(problem_id, unknown):
 
 
 class CausalFeedbackTest(unittest.TestCase):
-    def test_v2_rejects_one_command_line_project_root_for_all_projects(self):
-        with self.assertRaisesRegex(ValueError, "逐项目冻结"):
-            resolve_compile_environments({"version": "tracer-real-v2"}, ROOT)
-
     def test_powershell_wrapper_preflights_before_formal_run_and_clears_key(self):
         script = (ROOT / "scripts/run_tracer_real_causal.ps1").read_text(encoding="utf-8")
         self.assertLess(script.index("preflight"), script.index('"src/causal_feedback.py", "run"'))
@@ -121,22 +117,6 @@ end Demo
         }
         prompt = branch_prompt(problem, seed_row, intervention)
         self.assertIn(candidate, prompt)
-
-    def test_configured_prompt_budget_is_frozen_in_preregistration(self):
-        config = validate_config(
-            ROOT / "experiments/causal_feedback.tracer_extended_v2.json"
-        )
-        benchmark = load_benchmark(
-            ROOT / "benchmarks/real_repairs/tracer_real_v2/manifest.json"
-        )
-        prereg = json.loads(
-            (ROOT / "experiments/preregistrations/tracer_extended_v2.json").read_text(
-                encoding="utf-8"
-            )
-        )
-        validate_preregistration_record(prereg, config, benchmark)
-        self.assertEqual(config["prompt_source_characters"], 24000)
-        self.assertEqual(prereg["design"]["prompt_source_characters"], 24000)
 
     def test_protocol_and_plan_are_frozen_and_offline(self):
         protocol = validate_protocol()

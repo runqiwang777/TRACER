@@ -32,9 +32,6 @@ jobs:
       # 固定的 12 个真实 Lean 失败与 3 个基础设施事件；不调用模型 API。
       - name: Verify Compiler Feedback v1 fixtures
         run: python scripts/verify_compiler_feedback_v1.py --verify-only
-      # 核对最终冻结 manifest、公开占比修订与运行时预注册；不调用 provider。
-      - name: Audit TRACER-REAL v2 enrollment
-        run: python src/tracer_real_v2.py audit
       - name: Verify SP security metrics
         run: python src/security_study.py --check published/security-study-tracer-sp-v2/report.json
       # 普通 CI 核对协议与已提交报告；真实容器探针仅由独立手动工作流执行。

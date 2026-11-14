@@ -42,18 +42,12 @@ class ContinuousIntegrationTest(unittest.TestCase):
         self.assertLess(workflow.index("- name: Build Lean project"), workflow.index(gate))
         self.assertLess(workflow.index(gate), workflow.index("- name: Run tests"))
 
-    def test_current_enrollment_and_sp_metrics_are_ci_gates(self):
+    def test_sp_metrics_are_a_ci_gate(self):
         workflow = (ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
-        self.assertIn("run: python src/tracer_real_v2.py audit", workflow)
         self.assertIn(
             "run: python src/security_study.py --check published/security-study-tracer-sp-v2/report.json",
             workflow,
         )
-        self.assertLess(
-            workflow.index("run: python src/tracer_real_v2.py audit"),
-            workflow.index("- name: Run tests"),
-        )
-
     def test_published_sp_isolation_evidence_is_a_ci_gate(self):
         workflow = (ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
         command = (

@@ -6,7 +6,7 @@ Feedback Study v1 比较了 raw、normalized 和 structured 三种表示，但�
 
 Causal Feedback v1 将实验单位改为“模型 × 重复 × 题目的一次冻结首轮候选”。所有干预分支必须看到完全相同的首轮候选；只有该候选形成真实、非基础设施的 Lean 编译失败时，任务才进入主分析。首轮已经成功、provider 错误、编译器不可用、超时或安全门禁拒绝都会如实记录，但不混入反馈效果估计。
 
-机器可读协议为 [`experiments/causal_feedback.protocol.json`](../experiments/causal_feedback.protocol.json)，实现入口为 [`src/causal_feedback.py`](../src/causal_feedback.py)。项目级试点已经在 [`experiments/preregistrations/tracer_real_causal_v2.json`](../experiments/preregistrations/tracer_real_causal_v2.json) 中冻结；provider 结果必须晚于该预注册版本，且不得反向修改题库、主对比或停止规则。
+机器可读协议为 [`experiments/causal_feedback.protocol.json`](../experiments/causal_feedback.protocol.json)，实现入口为 [`src/causal_feedback.py`](../src/causal_feedback.py)。项目级试点已经在 [`experiments/preregistrations/tracer_real_causal_v1.json`](../experiments/preregistrations/tracer_real_causal_v1.json) 中冻结；provider 结果必须晚于该预注册版本，且不得反向修改题库、主对比或停止规则。
 
 ## 两阶段设计
 
@@ -80,7 +80,7 @@ python src/causal_feedback.py plan `
   --config experiments/causal_feedback.tracer_real_v1.json `
   --benchmark benchmarks/real_repairs/tracer_real_v1/manifest.json `
   --project-root mathlib_project `
-  --preregistration experiments/preregistrations/tracer_real_causal_v2.json
+  --preregistration experiments/preregistrations/tracer_real_causal_v1.json
 ```
 
 正式输出目录创建前，先用合成的 `True` 定理验证密钥、provider 协议、候选解析与 Lean。该调用不读取任何 TRACER-REAL 题目，也不计入 108 次实验调用：
@@ -98,7 +98,7 @@ python src/causal_feedback.py run `
   --config experiments/causal_feedback.tracer_real_v1.json `
   --benchmark benchmarks/real_repairs/tracer_real_v1/manifest.json `
   --project-root mathlib_project `
-  --preregistration experiments/preregistrations/tracer_real_causal_v2.json `
+  --preregistration experiments/preregistrations/tracer_real_causal_v1.json `
   --out results/causal-tracer-real-v1-deepseek-20260913 `
   --api-key-prompt `
   --max-calls 108 `
@@ -152,6 +152,4 @@ Windows PowerShell 可直接使用封装脚本，避免复制多行命令时混�
 4. 来源仓库、许可、版本、文件与定理名完整；
 5. 参考证明写入独立目录，公开任务和运行器不读取它。
 
-字段示例与命令见 [`benchmarks/real_repairs/README.md`](../benchmarks/real_repairs/README.md)。当前 `tracer-real-v1` 含 Mathlib 3 题、Batteries 4 题、Aesop 4 题，开发/验证/测试按项目隔离；每题均满足陈述不变、旧证明失败、当前证明通过。运行时须显式使用 `--project-root mathlib_project`。更大规模、多 test 项目的 TRACER-REAL 扩展与独立模型复现仍是后续工作。
-
-后续确认性扩展已进入 [TRACER-REAL v2 两阶段预注册](TRACER_REAL_V2.md)：当前只冻结纳入、配置与分析规则，尚无最终 v2 题库或 provider 结果。v2 要求至少五个全新测试项目，并为每个项目冻结独立 Lake 根和工具链；在最终 manifest 与运行时预注册生成前，门禁明确禁止 provider 调用。
+字段示例与命令见 [`benchmarks/real_repairs/README.md`](../benchmarks/real_repairs/README.md)。当前 `tracer-real-v1` 含 Mathlib 3 题、Batteries 4 题、Aesop 4 题，开发/验证/测试按项目隔离；每题均满足陈述不变、旧证明失败、当前证明通过。运行时须显式使用 `--project-root mathlib_project`。

@@ -43,9 +43,31 @@ def seed(problem_id, unknown):
 
 
 class CausalFeedbackTest(unittest.TestCase):
-    def test_v2_rejects_one_command_line_project_root_for_all_projects(self):
+    def test_multi_project_environments_work_without_a_public_study_contract(self):
+        toolchain = (ROOT / "lean-toolchain").read_text(encoding="utf-8").strip()
+        benchmark = {
+            "version": "custom",
+            "problems": [{"project_id": "alpha"}, {"project_id": "beta"}],
+            "project_environments": [
+                {"project_id": "alpha", "project_root": ".", "lean_toolchain": toolchain},
+                {
+                    "project_id": "beta",
+                    "project_root": "mathlib_project",
+                    "lean_toolchain": (ROOT / "mathlib_project/lean-toolchain").read_text(
+                        encoding="utf-8"
+                    ).strip(),
+                },
+            ],
+        }
+        roots, toolchains, mode = resolve_compile_environments(benchmark, None)
+        self.assertEqual(roots, {"alpha": ROOT, "beta": ROOT / "mathlib_project"})
+        self.assertEqual(toolchains["alpha"], toolchain)
+        self.assertEqual(mode, "manifest_project_lake_roots")
         with self.assertRaisesRegex(ValueError, "逐项目冻结"):
-            resolve_compile_environments({"version": "tracer-real-v2"}, ROOT)
+            resolve_compile_environments(benchmark, ROOT)
+        benchmark["project_environments"].pop()
+        with self.assertRaisesRegex(ValueError, "一一对应"):
+            resolve_compile_environments(benchmark, None)
 
     def test_powershell_wrapper_preflights_before_formal_run_and_clears_key(self):
         script = (ROOT / "scripts/run_tracer_real_causal.ps1").read_text(encoding="utf-8")
@@ -100,6 +122,19 @@ class CausalFeedbackTest(unittest.TestCase):
                 ROOT / "experiments/preregistrations/tracer_real_causal_v1.json", config, benchmark,
             )
 
+    def test_configured_prompt_budget_is_frozen_in_preregistration(self):
+        config = validate_config(ROOT / "experiments/causal_feedback.tracer_real_v1.json")
+        benchmark = load_benchmark(ROOT / "benchmarks/real_repairs/tracer_real_v1/manifest.json")
+        prereg = validate_preregistration(
+            ROOT / "experiments/preregistrations/tracer_real_causal_v1.json", config, benchmark,
+        )
+        config["prompt_source_characters"] = 24000
+        prereg["design"]["prompt_source_characters"] = 24000
+        validate_preregistration_record(prereg, config, benchmark)
+        config["prompt_source_characters"] += 1
+        with self.assertRaisesRegex(ValueError, "设计"):
+            validate_preregistration_record(prereg, config, benchmark)
+
     def test_long_source_keeps_target_and_complete_first_candidate(self):
         source = "import Std\n\n" + ("-- earlier context\n" * 1000) + '''namespace Demo
 theorem target (p : Prop) : p → p := by
@@ -121,22 +156,6 @@ end Demo
         }
         prompt = branch_prompt(problem, seed_row, intervention)
         self.assertIn(candidate, prompt)
-
-    def test_configured_prompt_budget_is_frozen_in_preregistration(self):
-        config = validate_config(
-            ROOT / "experiments/causal_feedback.tracer_extended_v2.json"
-        )
-        benchmark = load_benchmark(
-            ROOT / "benchmarks/real_repairs/tracer_real_v2/manifest.json"
-        )
-        prereg = json.loads(
-            (ROOT / "experiments/preregistrations/tracer_extended_v2.json").read_text(
-                encoding="utf-8"
-            )
-        )
-        validate_preregistration_record(prereg, config, benchmark)
-        self.assertEqual(config["prompt_source_characters"], 24000)
-        self.assertEqual(prereg["design"]["prompt_source_characters"], 24000)
 
     def test_protocol_and_plan_are_frozen_and_offline(self):
         protocol = validate_protocol()

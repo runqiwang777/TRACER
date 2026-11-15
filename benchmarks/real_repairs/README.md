@@ -61,48 +61,8 @@ python src/real_repairs.py build --repo mathlib_project/.lake/packages/aesop --p
 
 项目筛选还检查了 Plausible、Qq、ProofWidgets、ImportGraph、LeanSearchClient 与 Cli：没有通过全部门禁的候选不会为凑项目数进入清单。构建器不修改来源仓库，也不覆盖已有输出；参考证明仅写入 `.gitignore` 排除的 `private_references/`。
 
-## TRACER-REAL v2：最终题库与运行时预注册已冻结
+## 自定义题库的构建工具
 
-v2 不把上述 11 题改名后重复发布。机器可读的[纳入合同](tracer_real_v2.enrollment.json)已在新增测试项目筛选和 v2 provider 调用前冻结，要求至少 5 个全新测试项目、40 个测试任务、51 个总任务和 4 类测试错误。Mathlib、Batteries 与 Aesop 不得重新进入 v2 test。
+`src/real_repair_inventory.py scan` 枚举给定历史窗口内声明头不变、证明正文变化的候选。`screen` 在指定 Lake 环境中检查旧证明是否失败及修复证明是否通过，并可用 `--state` 恢复未完成的筛查。两个命令都可用 `--help` 查看参数。
 
-当前状态可执行离线审计：
-
-```powershell
-python src/tracer_real_v2.py audit
-```
-
-预期结果为 `ready_for_provider_run: true`、`test_projects: 5`、`test_tasks: 254`。该状态只表示最终 manifest、公开修订和运行时预注册一致，并不表示 provider 实验已经运行或产生结果。
-
-v2 项目组合规范使用 `tracer-real-project-split-v2`。除了 v1 的 `project_id`、`split` 和 `manifest`，每个项目还必须提供仓库内相对的 `compile_project_root` 与精确 `lean_toolchain`。组装器会验证对应 Lake 环境并在最终 manifest 中写入一对一的 `project_environments`；因果 runner 随后按题目所属项目选择环境，禁止用一个统一 `--project-root` 覆盖全部测试项目。
-
-候选发现不允许手工只挑容易通过的提交。先固定上游项目的检出端点和 first-parent 历史窗口，再枚举窗口内所有“声明头不变、证明正文变化”的可解析候选：
-
-```powershell
-python src/real_repair_inventory.py scan `
-  --repo path/to/upstream `
-  --project-id example `
-  --source-repository https://github.com/example/project `
-  --source-license Apache-2.0 `
-  --endpoint HEAD `
-  --max-commits 120 `
-  --out results/tracer-real-v2-candidates/example.inventory.json
-```
-
-随后逐项执行冻结的真实修复门禁。筛查报告保留每个接受或排除决定；输出已存在时拒绝覆盖：
-
-```powershell
-python src/real_repair_inventory.py screen `
-  --repo path/to/upstream `
-  --inventory results/tracer-real-v2-candidates/example.inventory.json `
-  --project-root path/to/upstream `
-  --workers 4 `
-  --state results/tracer-real-v2-candidates/example.screen-state.jsonl `
-  --spec-out benchmarks/real_repairs/example_v2.spec.json `
-  --report-out results/tracer-real-v2-candidates/example.screen.json
-```
-
-`scan` 与 `screen` 均不调用模型。`screen` 每完成一项就追加状态；中断后使用同一命令严格续跑，候选内容漂移时拒绝复用状态。`--workers` 只并行独立临时编译，检查点保持单写入者，最终报告保持冻结候选顺序。某项目通过门禁的任务少于冻结下限时，应连同完整筛查报告排除该项目，不得手工补选或根据后续 provider 表现换题。
-
-六个项目的 1,576 个候选已全部筛查：256 个通过、1,320 个拒绝；六份[公开筛查账本](tracer_real_v2_screening)保留每项决定并由 `tracer_real_v2.py audit` 反向核对冻结候选清单。SciLean 仅有 2 项通过，未达到每项目至少 5 题的门槛；其余五个项目共有 254 题。PhysLean 占 94/254≈37.0%，触发原 35% 集中度门禁。项目在最终 manifest 和任何 v2 provider 调用前追加[公开修订](../../experiments/preregistrations/tracer_real_v2_share_gate_amendment2.json)，把有效上限调整为 40%，不删除任何合格题且不改变其他门槛。[最终 manifest](tracer_real_v2/manifest.json)与[精确运行时预注册](../../experiments/preregistrations/tracer_real_causal_v2.json)现已生成并通过审计；尚无 v2 provider 结果。
-
-完整门槛、两阶段冻结顺序、最终预注册命令和结论边界见 [TRACER-REAL v2 协议](../../docs/TRACER_REAL_V2.md)。
+组合多个上游项目时，可在项目规范中用 `compile_project_root` 和 `lean_toolchain` 为各项目绑定独立环境。组合器把这些记录写入 manifest 的 `project_environments`，因果 runner 据此选择各题的 Lake 环境。

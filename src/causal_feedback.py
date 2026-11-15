@@ -255,9 +255,9 @@ def build_plan(config: dict[str, Any], benchmark: dict[str, Any]) -> dict[str, A
 def resolve_compile_environments(
     benchmark: dict[str, Any], project_root: Path | None,
 ) -> tuple[dict[str, Path], str | dict[str, str], str]:
-    """解析冻结编译环境；v2 必须逐项目绑定，v1 保持单项目兼容。"""
+    """解析 manifest 中的逐项目编译环境，兼容单项目配置。"""
 
-    if benchmark.get("version") != "tracer-real-v2":
+    if "project_environments" not in benchmark:
         active_root = project_root.resolve() if project_root is not None else ROOT
         if project_root is not None and not (
             (active_root / "lakefile.toml").is_file() or (active_root / "lakefile.lean").is_file()
@@ -271,33 +271,38 @@ def resolve_compile_environments(
         )
 
     if project_root is not None:
-        raise ValueError("TRACER-REAL v2 必须使用 manifest 中逐项目冻结的编译环境；禁止统一覆盖")
-    from tracer_real_v2 import (
-        SHARE_GATE_AMENDMENT_PATH, apply_share_gate_amendment,
-        read_json as read_v2_json, validate_v2_benchmark,
-    )
-
-    contract = apply_share_gate_amendment(
-        read_v2_json(ROOT / "benchmarks/real_repairs/tracer_real_v2.enrollment.json"),
-        read_v2_json(SHARE_GATE_AMENDMENT_PATH),
-    )
-    validate_v2_benchmark(benchmark, contract)
+        raise ValueError("多项目题库必须使用 manifest 中逐项目冻结的编译环境")
+    environments = benchmark["project_environments"]
+    project_ids = {problem.get("project_id") for problem in benchmark["problems"]}
+    if (
+        not isinstance(environments, list) or not environments
+        or any(not isinstance(row, dict) or set(row) != {"project_id", "project_root", "lean_toolchain"}
+               or any(not isinstance(value, str) or not value.strip() for value in row.values())
+               for row in environments)
+    ):
+        raise ValueError("逐项目编译环境必须包含项目 ID、相对路径和工具链")
+    environment_ids = {row["project_id"] for row in environments}
+    if len(environment_ids) != len(environments) or project_ids != environment_ids:
+        raise ValueError("逐项目编译环境必须与题库的项目一一对应")
     roots: dict[str, Path] = {}
     toolchains: dict[str, str] = {}
-    for row in benchmark["project_environments"]:
-        root = (ROOT / row["project_root"]).resolve()
+    for row in environments:
+        relative = Path(row["project_root"])
+        if relative.anchor or ".." in relative.parts:
+            raise ValueError("编译项目根必须是仓库内相对路径")
+        root = (ROOT / relative).resolve()
         try:
             root.relative_to(ROOT.resolve())
         except ValueError as exc:
-            raise ValueError("v2 项目编译根逃逸仓库") from exc
+            raise ValueError("项目编译根逃逸仓库") from exc
         if not ((root / "lakefile.toml").is_file() or (root / "lakefile.lean").is_file()):
-            raise ValueError("v2 项目编译根缺少 lakefile：" + row["project_id"])
+            raise ValueError("项目编译根缺少 lakefile：" + row["project_id"])
         toolchain_path = root / "lean-toolchain"
         if not toolchain_path.is_file():
-            raise ValueError("v2 项目编译根缺少 lean-toolchain：" + row["project_id"])
+            raise ValueError("项目编译根缺少 lean-toolchain：" + row["project_id"])
         actual_toolchain = toolchain_path.read_text(encoding="utf-8").strip()
         if actual_toolchain != row["lean_toolchain"]:
-            raise ValueError("v2 项目 lean-toolchain 与冻结记录不一致：" + row["project_id"])
+            raise ValueError("项目 lean-toolchain 与冻结记录不一致：" + row["project_id"])
         roots[row["project_id"]] = root
         toolchains[row["project_id"]] = actual_toolchain
     return roots, toolchains, "manifest_project_lake_roots"
@@ -344,18 +349,6 @@ def validate_preregistration_record(
     )
     if projects != frozen_projects:
         raise ValueError("预注册的项目与题目数量发生漂移")
-    if benchmark.get("version") == "tracer-real-v2":
-        # v2 采用两阶段预注册：先冻结纳入规则，再冻结满足门槛的精确清单。
-        from tracer_real_v2 import (
-            SHARE_GATE_AMENDMENT_PATH, apply_share_gate_amendment,
-            read_json as read_v2_json, validate_v2_benchmark,
-        )
-
-        contract = apply_share_gate_amendment(
-            read_v2_json(ROOT / "benchmarks/real_repairs/tracer_real_v2.enrollment.json"),
-            read_v2_json(SHARE_GATE_AMENDMENT_PATH),
-        )
-        validate_v2_benchmark(benchmark, contract)
     frozen_models = prereg["models"]
     model_fields = ("id", "model", "api_url", "temperature", "max_tokens")
     optional_model_fields = (
@@ -392,8 +385,8 @@ def validate_preregistration_record(
     if prereg["primary_analysis"].get("contrast") != "true_structured - content_free_retry":
         raise ValueError("v1 主对比必须唯一冻结为 structured 对 content-free retry")
     expected_population = (
-        "eligible_first_failures_on_preregistered_v2_test_projects"
-        if benchmark.get("version") == "tracer-real-v2"
+        "eligible_first_failures_on_preregistered_test_projects"
+        if "project_environments" in benchmark
         else "eligible_first_failures_on_test_split"
     )
     if prereg["primary_analysis"].get("population") != expected_population:

@@ -1,4 +1,4 @@
-"""TRACER-REAL v2 预注册确认性分析；只读取已完成轨迹，不调用 provider。"""
+"""对已保存的轨迹计算项目等权配对差；只读取已完成轨迹，不调用 provider。"""
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any
 
 
-ANALYSIS_VERSION = "tracer-real-v2-causal-analysis-v1"
+ANALYSIS_VERSION = "tracer-project-paired-analysis-v1"
 CONTROL_ARM = "content_free_retry"
 TREATMENT_ARM = "true_structured"
 DEFAULT_RESAMPLES = 10_000
@@ -92,7 +92,7 @@ def analyze(
 
     eligible = [row for row in seeds if row.get("eligible_first_failure")]
     if not eligible:
-        raise ValueError("没有合格首轮失败，不能执行 v2 主分析")
+        raise ValueError("没有合格首轮失败，不能执行 项目等权主分析")
     by_pair: dict[tuple[str, str], dict[str, Any]] = {}
     for row in branches:
         key = (str(row.get("seed_id", "")), str(row.get("arm", "")))
@@ -106,7 +106,7 @@ def analyze(
         seed_id = str(row.get("seed_id", ""))
         project_id = row.get("project_id")
         if row.get("split") != "test":
-            raise ValueError("v2 主分析只能包含预注册 test 项目的首轮记录")
+            raise ValueError("项目等权主分析只能包含预注册 test 项目的首轮记录")
         if not seed_id or not isinstance(project_id, str) or not project_id:
             raise ValueError("合格首轮记录缺少 seed_id 或 project_id")
         treatment = by_pair.get((seed_id, TREATMENT_ARM))
@@ -151,7 +151,7 @@ def analyze(
     return {
         "analysis_version": ANALYSIS_VERSION,
         "primary_contrast": TREATMENT_ARM + " - " + CONTROL_ARM,
-        "population": "eligible_first_failures_on_preregistered_v2_test_projects",
+        "population": "eligible_first_failures_on_preregistered_test_projects",
         "project_weighting": "equal_weight_per_test_project",
         "test_projects": len(grouped),
         "matched_pairs": matched_pairs,

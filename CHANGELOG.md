@@ -1,11 +1,31 @@
 # TRACER 补丁记录
 
+本文件记录影响安全性、实验可复现性、Lean 编译边界和公开发布的补丁。它与 `PROGRESS.md` 的职责不同：`PROGRESS.md` 描述当前状态，本文按提交批次记录变更原因、影响范围和验证证据。
+
+## 2026-09-26 — 因果研究工具的传输故障恢复
+
+- 因果实验续跑现在只把明确的网络超时、连接拒绝/重置和可重试 HTTP 状态归档到 `retry_history/` 后重新请求；鉴权、策略与候选错误仍保持终态，避免借重跑改变实验观察。
+- 连续三次 provider 传输失败会立即熔断，在退出前保存失败工件，防止网络中断被批量写成 `provider_or_policy_error`。
+- 调用预算已预留但进程在结果落盘前中断时，差额写入 `transport_recovery.json` 并从分析中排除；正式汇总和审计同时披露归档重试数与未知预留调用数。
+
+## 2026-09 — Lean 项目环境兼容修复
+
+- 修复隔离 Lean 子进程在 Windows 上无法读取全局 Git `safe.directory` 时的项目依赖访问问题，仅为当前项目及其本地依赖配置进程级信任，并增加回归测试。
+- 修复冻结依赖准备：已提交的 `lake-manifest.json` 成为唯一依赖锁，禁止准备阶段重新解析浮动 branch 依赖；Windows 大型项目准备使用单线程，避免并发资源耗尽留下不完整构建对象。
+
 ## 2026-09-24 — 发布 SP 原生 Linux 操作系统隔离证据
 
 - 手动 GitHub Actions 运行 `36004997480` 在提交 `18b477673ace25906557045f919e128cf61e58a7` 上完成 `tracer-sp-isolation-v1` 探针；GitHub-hosted Ubuntu Docker Engine 环境观察到 14/14 项冻结控制为 true。
 - 新增 `published/security-isolation-tracer-sp-v1/`，保存脱敏 Linux 报告、运行来源和明确的证据边界；危险 Lean 夹具没有执行，Windows Docker Desktop 明确保持 `pending`。
 - 新增独立发布审计器与 CI 门禁，核对冻结控制集合、报告来源、危险夹具禁执行状态、凭据赋值和本机绝对路径；普通 CI 不重新运行 Docker。
 - 中英文 README、SP 协议、安全策略、项目概览、进度登记和未来计划统一改为“单平台已观察、双平台未完成”，不把一次 Linux 运行写成完整沙箱或零风险保证。
+
+## 2026-09-24 — 当前主线与历史材料分层
+
+- 新增 `historical/` 索引，将已被取代但仍可复核的 Evaluation18 pilot、Feedback Study v1/第二模型、FATE-M Part 1–3、旧报告和工作流快照成套归档；全部内容通过 Git 重命名保留，没有删除项目或改写原始结果。
+- `published/` 只保留当前六臂主结果与 SP v2，`results/` 只保留当前 Capsule 复验工件。
+- 默认 CI 不再重复执行已结束的旧研究工作流；兼容测试和审计脚本改读归档路径，继续防止历史证据腐化。
+- 中英文 README、证据登记、项目概览、贡献指南和结果目录说明已同步新边界。
 
 ## 2026-09-23 — 24 案例无密钥交互 Demo 与 GitHub Pages 入口
 

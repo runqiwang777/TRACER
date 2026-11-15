@@ -11,8 +11,8 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from causal_feedback import (  # noqa: E402
     ARMS, _prompt_source, audit_run, branch_prompt, build_plan, donor_map, intervention_for,
-    preflight_provider, run_matrix, summarize, validate_config,
-    validate_preregistration, validate_protocol,
+    preflight_provider, resolve_compile_environments, run_matrix, summarize, validate_config,
+    validate_preregistration, validate_preregistration_record, validate_protocol,
 )
 from compiler_feedback import build_feedback_record  # noqa: E402
 from error_state_graph import build_error_state_graph  # noqa: E402
@@ -43,6 +43,32 @@ def seed(problem_id, unknown):
 
 
 class CausalFeedbackTest(unittest.TestCase):
+    def test_multi_project_environments_work_without_a_public_study_contract(self):
+        toolchain = (ROOT / "lean-toolchain").read_text(encoding="utf-8").strip()
+        benchmark = {
+            "version": "custom",
+            "problems": [{"project_id": "alpha"}, {"project_id": "beta"}],
+            "project_environments": [
+                {"project_id": "alpha", "project_root": ".", "lean_toolchain": toolchain},
+                {
+                    "project_id": "beta",
+                    "project_root": "mathlib_project",
+                    "lean_toolchain": (ROOT / "mathlib_project/lean-toolchain").read_text(
+                        encoding="utf-8"
+                    ).strip(),
+                },
+            ],
+        }
+        roots, toolchains, mode = resolve_compile_environments(benchmark, None)
+        self.assertEqual(roots, {"alpha": ROOT, "beta": ROOT / "mathlib_project"})
+        self.assertEqual(toolchains["alpha"], toolchain)
+        self.assertEqual(mode, "manifest_project_lake_roots")
+        with self.assertRaisesRegex(ValueError, "逐项目冻结"):
+            resolve_compile_environments(benchmark, ROOT)
+        benchmark["project_environments"].pop()
+        with self.assertRaisesRegex(ValueError, "一一对应"):
+            resolve_compile_environments(benchmark, None)
+
     def test_powershell_wrapper_preflights_before_formal_run_and_clears_key(self):
         script = (ROOT / "scripts/run_tracer_real_causal.ps1").read_text(encoding="utf-8")
         self.assertLess(script.index("preflight"), script.index('"src/causal_feedback.py", "run"'))
@@ -95,6 +121,19 @@ class CausalFeedbackTest(unittest.TestCase):
             validate_preregistration(
                 ROOT / "experiments/preregistrations/tracer_real_causal_v1.json", config, benchmark,
             )
+
+    def test_configured_prompt_budget_is_frozen_in_preregistration(self):
+        config = validate_config(ROOT / "experiments/causal_feedback.tracer_real_v1.json")
+        benchmark = load_benchmark(ROOT / "benchmarks/real_repairs/tracer_real_v1/manifest.json")
+        prereg = validate_preregistration(
+            ROOT / "experiments/preregistrations/tracer_real_causal_v1.json", config, benchmark,
+        )
+        config["prompt_source_characters"] = 24000
+        prereg["design"]["prompt_source_characters"] = 24000
+        validate_preregistration_record(prereg, config, benchmark)
+        config["prompt_source_characters"] += 1
+        with self.assertRaisesRegex(ValueError, "设计"):
+            validate_preregistration_record(prereg, config, benchmark)
 
     def test_long_source_keeps_target_and_complete_first_candidate(self):
         source = "import Std\n\n" + ("-- earlier context\n" * 1000) + '''namespace Demo

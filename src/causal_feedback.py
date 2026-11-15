@@ -254,22 +254,58 @@ def build_plan(config: dict[str, Any], benchmark: dict[str, Any]) -> dict[str, A
 
 def resolve_compile_environments(
     benchmark: dict[str, Any], project_root: Path | None,
-) -> tuple[str, str]:
-    """解析当前试点使用的 Lake 项目与工具链。"""
+) -> tuple[dict[str, Path], str | dict[str, str], str]:
+    """解析 manifest 中的逐项目编译环境，兼容单项目配置。"""
 
-    if benchmark.get("project_environments"):
-        raise ValueError("当前 runner 只支持单一编译根，无法运行逐项目绑定的题库")
-    active_root = project_root.resolve() if project_root is not None else ROOT
-    if project_root is not None and not (
-        (active_root / "lakefile.toml").is_file() or (active_root / "lakefile.lean").is_file()
+    if "project_environments" not in benchmark:
+        active_root = project_root.resolve() if project_root is not None else ROOT
+        if project_root is not None and not (
+            (active_root / "lakefile.toml").is_file() or (active_root / "lakefile.lean").is_file()
+        ):
+            raise ValueError("显式编译项目根缺少 lakefile")
+        toolchain_path = active_root / "lean-toolchain"
+        if not toolchain_path.is_file():
+            raise ValueError("编译项目根缺少 lean-toolchain")
+        return {}, toolchain_path.read_text(encoding="utf-8").strip(), (
+            "explicit_lake_project" if project_root is not None else "benchmark_project"
+        )
+
+    if project_root is not None:
+        raise ValueError("多项目题库必须使用 manifest 中逐项目冻结的编译环境")
+    environments = benchmark["project_environments"]
+    project_ids = {problem.get("project_id") for problem in benchmark["problems"]}
+    if (
+        not isinstance(environments, list) or not environments
+        or any(not isinstance(row, dict) or set(row) != {"project_id", "project_root", "lean_toolchain"}
+               or any(not isinstance(value, str) or not value.strip() for value in row.values())
+               for row in environments)
     ):
-        raise ValueError("显式编译项目根缺少 lakefile")
-    toolchain_path = active_root / "lean-toolchain"
-    if not toolchain_path.is_file():
-        raise ValueError("编译项目根缺少 lean-toolchain")
-    return toolchain_path.read_text(encoding="utf-8").strip(), (
-        "explicit_lake_project" if project_root is not None else "benchmark_project"
-    )
+        raise ValueError("逐项目编译环境必须包含项目 ID、相对路径和工具链")
+    environment_ids = {row["project_id"] for row in environments}
+    if len(environment_ids) != len(environments) or project_ids != environment_ids:
+        raise ValueError("逐项目编译环境必须与题库的项目一一对应")
+    roots: dict[str, Path] = {}
+    toolchains: dict[str, str] = {}
+    for row in environments:
+        relative = Path(row["project_root"])
+        if relative.anchor or ".." in relative.parts:
+            raise ValueError("编译项目根必须是仓库内相对路径")
+        root = (ROOT / relative).resolve()
+        try:
+            root.relative_to(ROOT.resolve())
+        except ValueError as exc:
+            raise ValueError("项目编译根逃逸仓库") from exc
+        if not ((root / "lakefile.toml").is_file() or (root / "lakefile.lean").is_file()):
+            raise ValueError("项目编译根缺少 lakefile：" + row["project_id"])
+        toolchain_path = root / "lean-toolchain"
+        if not toolchain_path.is_file():
+            raise ValueError("项目编译根缺少 lean-toolchain：" + row["project_id"])
+        actual_toolchain = toolchain_path.read_text(encoding="utf-8").strip()
+        if actual_toolchain != row["lean_toolchain"]:
+            raise ValueError("项目 lean-toolchain 与冻结记录不一致：" + row["project_id"])
+        roots[row["project_id"]] = root
+        toolchains[row["project_id"]] = actual_toolchain
+    return roots, toolchains, "manifest_project_lake_roots"
 
 
 def validate_preregistration(
@@ -348,7 +384,12 @@ def validate_preregistration_record(
         raise ValueError("预注册设计与运行配置发生漂移")
     if prereg["primary_analysis"].get("contrast") != "true_structured - content_free_retry":
         raise ValueError("v1 主对比必须唯一冻结为 structured 对 content-free retry")
-    if prereg["primary_analysis"].get("population") != "eligible_first_failures_on_test_split":
+    expected_population = (
+        "eligible_first_failures_on_preregistered_test_projects"
+        if "project_environments" in benchmark
+        else "eligible_first_failures_on_test_split"
+    )
+    if prereg["primary_analysis"].get("population") != expected_population:
         raise ValueError("主分析人群必须是预注册测试项目上的合格首轮失败")
 
 
@@ -635,7 +676,7 @@ def run_matrix(
         validate_preregistration_record(preregistration, config, benchmark)
     if project_root is not None:
         project_root = project_root.resolve()
-    toolchain_snapshot, compile_environment = resolve_compile_environments(
+    project_roots, toolchain_snapshot, compile_environment = resolve_compile_environments(
         benchmark, project_root,
     )
     plan = build_plan(config, benchmark)
@@ -719,9 +760,10 @@ def run_matrix(
                 continue
         problem = problems[task["problem_id"]]
         source_file = benchmark_path.parent / problem["file"]
+        active_project_root = project_roots.get(problem.get("project_id")) or project_root
         compile_anchor = (
-            project_root / f"TRACERCausal_{problem['id']}.lean"
-            if project_root is not None else source_file
+            active_project_root / f"TRACERCausal_{problem['id']}.lean"
+            if active_project_root is not None else source_file
         )
         provider = providers[task["model_id"]]
         prompt = _seed_prompt(problem, limit=source_limit)
@@ -778,9 +820,10 @@ def run_matrix(
         seed = by_id[item["seed_id"]]
         problem = problems[seed["problem_id"]]
         source_file = benchmark_path.parent / problem["file"]
+        active_project_root = project_roots.get(problem.get("project_id")) or project_root
         compile_anchor = (
-            project_root / f"TRACERCausal_{problem['id']}.lean"
-            if project_root is not None else source_file
+            active_project_root / f"TRACERCausal_{problem['id']}.lean"
+            if active_project_root is not None else source_file
         )
         target_text = problem["theorem"] + "\n" + problem["source_text"]
         retrieved = retrieve(target_text, examples, top_k=3, target=target_text) if item["arm"] in {"retrieval_only", "adaptive"} else []
@@ -832,7 +875,7 @@ def run_matrix(
                     solution_path.write_text(compiled.isolated_source, encoding="utf-8")
                     checked = run_lean_file(
                         solution_path, config["compile_timeout"],
-                        project_root or find_project_root(source_file),
+                        active_project_root or find_project_root(source_file),
                     )
                     if not checked.ok or diagnostics_use_sorry(checked.diagnostics):
                         raise RuntimeError("分支成功证明独立复编译失败")
@@ -846,7 +889,7 @@ def run_matrix(
                     "diagnostic": diagnostic,
                     "raw_diagnostics": redact_text(
                         redact_sensitive_text(compiled.diagnostics),
-                        tuple(path for path in (ROOT, source_file.parent, project_root) if path is not None),
+                        tuple(path for path in (ROOT, source_file.parent, active_project_root) if path is not None),
                     )[:8000],
                     "usage": generation.usage,
                     "estimated_cost_usd": estimate_cost(generation.usage, provider.metadata()),

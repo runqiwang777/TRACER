@@ -60,3 +60,9 @@ python src/real_repairs.py build --repo mathlib_project/.lake/packages/aesop --p
 ```
 
 项目筛选还检查了 Plausible、Qq、ProofWidgets、ImportGraph、LeanSearchClient 与 Cli：没有通过全部门禁的候选不会为凑项目数进入清单。构建器不修改来源仓库，也不覆盖已有输出；参考证明仅写入 `.gitignore` 排除的 `private_references/`。
+
+## 自定义题库的构建工具
+
+`src/real_repair_inventory.py scan` 枚举给定历史窗口内声明头不变、证明正文变化的候选。`screen` 在指定 Lake 环境中检查旧证明是否失败及修复证明是否通过，并可用 `--state` 恢复未完成的筛查。两个命令都可用 `--help` 查看参数。
+
+组合多个上游项目时，可在项目规范中用 `compile_project_root` 和 `lean_toolchain` 为各项目绑定独立环境。组合器把这些记录写入 manifest 的 `project_environments`，因果 runner 据此选择各题的 Lake 环境。

@@ -73,6 +73,13 @@ The completed six-condition pilot used 24 tasks, two model configurations and th
 
 **The hard part:** A proof can fail because of a missing name, a wrong type, an unfinished goal or a changed dependency. We must preserve the right context, avoid leaking answers, separate API failures from proof failures, and account for the actual cost of every attempt.
 
+## Built and planned
+
+| | |
+| --- | --- |
+| **Built** | Bounded proof repair, source-linked diagnostics, example retrieval, saved proofs, 24 replayable failure cases. |
+| **Planned** | Change one diagnostic fact at a time to test editing behavior. Then test whether choosing feedback by error type helps on independent data. |
+
 ## Run a small example locally
 
 After installing Python 3.11+ and the Lean toolchain pinned by this repository:

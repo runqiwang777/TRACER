@@ -27,3 +27,17 @@ body:
       description: 粘贴 python -m leancapsule replay 的 JSON 输出
     validations:
       required: true
+  - type: input
+    id: toolchain
+    attributes:
+      label: Lean 工具链版本
+      description: lean-toolchain 文件内容或 elan show 的输出
+    validations:
+      required: true
+  - type: input
+    id: replay_command
+    attributes:
+      label: 精确回放命令
+      description: 产生上述回放结果的确切命令（请勿包含密钥、个人路径或私有代码）
+    validations:
+      required: true

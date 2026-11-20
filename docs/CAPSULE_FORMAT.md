@@ -24,3 +24,12 @@
 ## 来源与许可
 
 公开 capsule 必须补充来源、许可、Lean 工具链和已知限制。生成命令只提供占位 provenance，发布前需要人工完善。
+
+
+## 术语表
+
+- **capsule**：可复现的 Lean 失败工件目录，包含输入、期望诊断与回放脚本。
+- **diagnostic key**：由诊断类别和规范化核心消息组成的稳定标识，用于判断两次编译的诊断是否一致；见上文「诊断比较」。
+- **replay**：在干净环境中重新运行 capsule 的编译过程并核对诊断是否仍然出现，入口命令为 `python -m leancapsule replay <目录>`。
+- **standalone extraction**：只抽取触发诊断的最小代码片段作为 `Capsule.lean`，不依赖原项目其余部分。
+- **full-file fallback**：无法可靠抽取最小片段时，直接以完整源文件作为 `Capsule.lean`。

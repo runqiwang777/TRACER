@@ -21,4 +21,4 @@
 2. **确认 `lake` 可用**：运行 `lake --version`；若命令不存在，请按 [CONTRIBUTING](../CONTRIBUTING.md) 第 1 条重装 Lean/Lake。
 3. **`lake build` 无法下载依赖**：先检查网络与代理设置，然后重试 `lake build`；仍失败时保留完整错误输出并联系维护者。
 
-这些检查只覆盖环境/安装问题；证明失败请参考 [CAPSULE_FORMAT.md](CAPSULE_FORMAT.md) 的诊断比较，模型接入问题请参考 API 文档。相关术语见 [CAPSULE_FORMAT.md 术语表](CAPSULE_FORMAT.md#术语表)。
+这些检查只覆盖环境/安装问题；证明失败请参考 [CAPSULE_FORMAT.md](CAPSULE_FORMAT.md) 的诊断比较，模型接入问题请参考 [API 文档](API_GUIDE.md)。相关术语见 [CAPSULE_FORMAT.md 术语表](CAPSULE_FORMAT.md#术语表)。

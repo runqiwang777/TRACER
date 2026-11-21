@@ -2,7 +2,7 @@
 
 [English](README.md) | **简体中文** | [日本語](README.ja.md) | [한국어](README.ko.md)
 
-**让 AI 写的数学证明出错后能修复，每次修改都交给 Lean 检查。**
+**让 AI 写的数学证明出错后能修复，每次修改都交给 Lean 4 检查。**
 
 [Website](https://runqiwang777.github.io/TRACER/zh.html) · [Demo](https://runqiwang777.github.io/TRACER/demo/) · [API 指南](docs/API_GUIDE.md)
 

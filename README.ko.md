@@ -2,7 +2,7 @@
 
 [English](README.md) | [简体中文](README.zh-CN.md) | [日本語](README.ja.md) | **한국어**
 
-**AI가 작성한 수학 증명을 수정하고, Lean으로 매번 검증합니다.**
+**AI가 작성한 수학 증명을 수정하고, Lean 4 으로 매번 검증합니다.**
 
 [Website](https://runqiwang777.github.io/TRACER/ko.html) · [Demo](https://runqiwang777.github.io/TRACER/demo/) · [API 가이드](docs/API_GUIDE.md)
 

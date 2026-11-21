@@ -2,7 +2,7 @@
 
 **English** | [简体中文](README.zh-CN.md) | [日本語](README.ja.md) | [한국어](README.ko.md)
 
-**Repair AI-written mathematical proofs. Check every result with Lean.**
+**Repair AI-written mathematical proofs. Check every result with Lean 4.**
 
 [Website](https://runqiwang777.github.io/TRACER/) · [Demo](https://runqiwang777.github.io/TRACER/demo/) · [API guide](docs/API_GUIDE.md)
 

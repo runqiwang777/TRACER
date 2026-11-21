@@ -2,7 +2,7 @@
 
 [English](README.md) | [简体中文](README.zh-CN.md) | **日本語** | [한국어](README.ko.md)
 
-**AI が書いた数学の証明を修復し、Lean で毎回検証します。**
+**AI が書いた数学の証明を修復し、Lean 4 で毎回検証します。**
 
 [Website](https://runqiwang777.github.io/TRACER/ja.html) · [Demo](https://runqiwang777.github.io/TRACER/demo/) · [API ガイド](docs/API_GUIDE.md)
 
